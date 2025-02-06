@@ -17,11 +17,11 @@ function App() {
   );
 
   return (
-    <div className="min-h-svh bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+    <div className="min-h-svh bg-white p-4 font-pacamara-inter">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <Book className="w-10 h-10 text-indigo-600" />
-          <h1 className="text-4xl font-bold text-gray-800">
+          <Book className="w-10 h-10 text-pacamara-secondary" />
+          <h1 className="text-4xl gradient-underline">
             Kamus Arab Amiyah Saudi
           </h1>
         </div>
@@ -33,7 +33,7 @@ function App() {
               placeholder="Cari kata dalam bahasa Arab atau Indonesia..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-colors text-lg"
+              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 outline-none transition-colors text-lg"
             />
           </div>
         </div>
@@ -62,7 +62,7 @@ function App() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg text-indigo-600 font-semibold">
+                      <p className="text-lg text-pacamara-secondary font-semibold">
                         {entry.indonesia}
                       </p>
                     </div>

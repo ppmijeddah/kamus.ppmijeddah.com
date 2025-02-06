@@ -13,6 +13,34 @@
     overflow-x: hidden;
   }
 
+  .gradient-underline {
+    line-height: 0.6em;
+    vertical-align: 0em;
+    border-bottom: 0.27em solid transparent;
+    -moz-border-image: -moz-linear-gradient(
+      left,
+      theme("colors.pacamara-secondary") 0%,
+      theme("colors.pacamara-accent") 100%
+    );
+    -webkit-border-image: -webkit-linear-gradient(
+      left,
+      theme("colors.pacamara-secondary") 0%,
+      theme("colors.pacamara-accent") 100%
+    );
+    border-image: linear-gradient(
+      to right,
+      theme("colors.pacamara-secondary") 0%,
+      theme("colors.pacamara-accent") 100%
+    );
+    border-image-slice: 1;
+
+    @apply transition-all duration-300;
+  }
+
+  .gradient-underline span {
+    vertical-align: -0.38em;
+  }
+
   .font-arabic {
     font-family: "Amiri", serif;
     direction: rtl;
