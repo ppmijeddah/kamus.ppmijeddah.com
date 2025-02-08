@@ -1,8 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "selector",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      backgroundSize: {
+        "gradient-dashed": "20px 2px, 100% 2px",
+      },
       fontFamily: {
         arabic: ["Amiri", "serif"],
         "pacamara-inter": ['"Inter"', "sans-serif"],
@@ -23,5 +27,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };

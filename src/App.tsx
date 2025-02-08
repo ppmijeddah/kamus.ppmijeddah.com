@@ -17,12 +17,14 @@ function App() {
   );
 
   return (
-    <div className="min-h-svh bg-white p-4 font-pacamara-inter">
+    <div className="min-h-svh bg-white p-4 font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
           <Book className="w-10 h-10 text-pacamara-secondary" />
-          <h1 className="text-4xl gradient-underline">
-            Kamus Arab Amiyah Saudi
+          <h1 className="relative bottom-2">
+            <span className="gradient-underline">
+              <span>Kamus Amiyah Saudi {"<>"} Fushah</span>
+            </span>
           </h1>
         </div>
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
