@@ -56,54 +56,54 @@ function App() {
               </p>
             </div>
           ) : (
-            filteredEntries.map((entry, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
-              >
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-800">
-                        {entry.word}
-                      </h2>
-                      <p className="text-xl text-gray-600 font-arabic mt-1">
-                        {entry.amiyah_arab}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg text-pacamara-secondary font-semibold">
-                        {entry.indonesia}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-100 pt-4">
-                    <h3 className="text-sm font-semibold text-gray-500 mb-2">
-                      Fushah:
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg text-gray-800">{entry.fushah}</p>
-                      <p className="text-lg text-gray-600 font-arabic">
-                        {entry.fushah_arab}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-100 pt-4">
-                    <h3 className="text-sm font-semibold text-gray-500 mb-2">
-                      Contoh Penggunaan:
-                    </h3>
-                    <p className="text-gray-700">{entry.contoh}</p>
-                  </div>
-                </div>
-              </div>
-            ))
+            <DictionaryList entries={filteredEntries} />
           )}
         </div>
       </div>
     </div>
   );
+}
+
+function DictionaryList({ entries }: { entries: DictionaryEntry[] }) {
+  return entries.map((entry, index) => (
+    <div
+      key={index}
+      className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
+    >
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">{entry.word}</h2>
+            <p className="text-xl text-gray-600 font-arabic mt-1">
+              {entry.amiyah_arab}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-lg text-pacamara-secondary font-semibold">
+              {entry.indonesia}
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100 pt-4">
+          <h3 className="text-sm font-semibold text-gray-500 mb-2">Fushah:</h3>
+          <div className="flex items-center justify-between">
+            <p className="text-lg text-gray-800">{entry.fushah}</p>
+            <p className="text-lg text-gray-600 font-arabic">
+              {entry.fushah_arab}
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100 pt-4">
+          <h3 className="text-sm font-semibold text-gray-500 mb-2">
+            Contoh Penggunaan:
+          </h3>
+          <p className="text-gray-700">{entry.contoh}</p>
+        </div>
+      </div>
+    </div>
+  ));
 }
 
 export default App;
