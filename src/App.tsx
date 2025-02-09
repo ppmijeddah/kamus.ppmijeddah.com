@@ -2,12 +2,21 @@ import { useState } from "react";
 import { Search, Book } from "lucide-react";
 import type { DictionaryEntry } from "./types";
 import entriesJson from "./__generated__/dictionary.json";
+import { useCallback } from "react";
+import debounce from "lodash.debounce";
 
 function App() {
   const [entries] = useState<DictionaryEntry[]>(
     entriesJson as DictionaryEntry[]
   );
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 500),
+    []
+  );
 
   const filteredEntries = entries.filter(
     (entry) =>
@@ -33,8 +42,7 @@ function App() {
             <input
               type="text"
               placeholder="Cari kata dalam bahasa Arab atau Indonesia..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearch}
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 outline-none transition-colors text-lg"
             />
           </div>
