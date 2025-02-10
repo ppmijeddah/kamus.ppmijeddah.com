@@ -17,6 +17,7 @@ function App() {
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 500),
     []
   );
