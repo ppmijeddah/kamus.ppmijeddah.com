@@ -42,7 +42,7 @@ function App() {
           </h1>
         </div>
 
-        <div className="bg-white md:rounded-lg shadow-lg p-6 mb-6 sticky top-0 mx-4">
+        <div className="bg-white md:rounded-lg shadow-lg p-4 mb-6 sticky top-0 md:mx-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
