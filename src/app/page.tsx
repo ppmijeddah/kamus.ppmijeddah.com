@@ -47,7 +47,7 @@ function App() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Cari kata dalam bahasa Arab atau Indonesia..."
+              placeholder="Cari kata..."
               onChange={handleSearch}
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 outline-none transition-colors text-lg"
             />
