@@ -35,7 +35,7 @@ function App() {
           <Book className="w-10 h-10 text-pacamara-secondary" />
           <h1 className="relative bottom-2">
             <span className="gradient-underline">
-              <span>Kamus Amiyah Saudi {"<>"} Fushah</span>
+              <span>Kamus Amiyah Saudi {"<>"} Indo</span>
             </span>
           </h1>
         </div>
