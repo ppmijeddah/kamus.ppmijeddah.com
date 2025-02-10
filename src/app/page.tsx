@@ -42,15 +42,17 @@ function App() {
           </h1>
         </div>
 
-        <div className="bg-white shadow-lg p-6 mb-6 sticky top-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Cari kata..."
-              onChange={handleSearch}
-              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 outline-none transition-colors text-lg"
-            />
+        <div className="md:px-4">
+          <div className="bg-white md:rounded-lg shadow-lg p-6 mb-6 sticky top-0">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Cari kata..."
+                onChange={handleSearch}
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 outline-none transition-colors text-lg"
+              />
+            </div>
           </div>
         </div>
 
