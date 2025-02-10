@@ -29,7 +29,7 @@ function App() {
   );
 
   return (
-    <div className="min-h-svh bg-white px-4 pt-4 pb-24 font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0">
+    <div className="min-h-svh bg-white pt-4 pb-24 font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
           <Book className="w-10 h-10 text-pacamara-secondary" />
@@ -41,7 +41,8 @@ function App() {
             </span>
           </h1>
         </div>
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6 sticky top-0">
+
+        <div className="bg-white shadow-lg p-6 mb-6 sticky top-0">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
@@ -53,7 +54,7 @@ function App() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 px-4">
           {filteredEntries.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg shadow-lg">
               <p className="text-gray-600 text-lg">
