@@ -1,7 +1,13 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
+
 export default {
   darkMode: "selector",
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     extend: {
       backgroundSize: {
@@ -9,7 +15,7 @@ export default {
       },
       fontFamily: {
         arabic: ["Amiri", "serif"],
-        "pacamara-inter": ['"Inter"', "sans-serif"],
+        "pacamara-inter": ["var(--font-inter)", "sans-serif"],
         "pacamara-space": ['"Space Grotesk"', "sans-serif"],
       },
       boxShadow: {
@@ -27,5 +33,5 @@ export default {
       },
     },
   },
-  plugins: [require("@tailwindcss/typography")],
-};
+  plugins: [typography],
+} satisfies Config;

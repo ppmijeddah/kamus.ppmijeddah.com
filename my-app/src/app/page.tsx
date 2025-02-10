@@ -1,9 +1,12 @@
+"use client";
+
 import { useState } from "react";
 import { Search, Book, MessageCircleMore } from "lucide-react";
-import type { DictionaryEntry } from "./types";
-import entriesJson from "./__generated__/dictionary.json";
+import type { DictionaryEntry } from "@/types";
+import entriesJson from "@/__generated__/dictionary.json";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
+import Link from "next/link";
 
 function App() {
   const [entries] = useState<DictionaryEntry[]>(
@@ -115,21 +118,21 @@ function Navigation() {
     <nav className="bg-white border-t border-gray-200 py-2 px-4 w-full">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-around items-center">
-          <a
+          <Link
             href="/"
             className="flex flex-col items-center text-pacamara-secondary no-underline"
           >
             <Book className="w-6 h-6" />
             <span className="text-xs mt-1">Kamus</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/percakapan"
             className="flex flex-col items-center text-gray-500 hover:text-pacamara-secondary no-underline"
           >
             <MessageCircleMore className="w-6 h-6" />
             <span className="text-xs mt-1">Percakapan</span>
-          </a>
+          </Link>
         </div>
       </div>
     </nav>

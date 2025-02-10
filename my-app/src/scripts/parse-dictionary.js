@@ -1,18 +1,18 @@
-import fs from "fs/promises";
-import path from "path";
-import url from "url";
+/* eslint-disable @typescript-eslint/no-require-imports */
+const fs = require("fs").promises;
+const path = require("path");
 
 main();
 
 async function main() {
-  const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
   const root = path.join(__dirname, "..");
   const input = path.join(__dirname, "./dictionary.csv");
-  const output = path.join(root, "./src/__generated__/dictionary.json");
+  const output = path.join(root, "./__generated__/dictionary.json");
 
   console.log(`Parsing dictionary csv in ${input}`);
 
   const text = await fs.readFile(input, "utf8");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, ...lines] = text.split("\n");
 
   const parsedEntries = lines
