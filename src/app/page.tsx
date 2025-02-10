@@ -33,9 +33,11 @@ function App() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-center gap-3 mb-8">
           <Book className="w-10 h-10 text-pacamara-secondary" />
-          <h1 className="relative bottom-2">
+          <h1 className="relative bottom-4 md:bottom-2">
             <span className="gradient-underline">
-              <span>Kamus Amiyah Saudi {"<>"} Indo</span>
+              <span className="text-base md:text-3xl">
+                Kamus Amiyah Saudi {"<>"} Indo
+              </span>
             </span>
           </h1>
         </div>
