@@ -1,5 +1,5 @@
-import { Book, MessageCircleMore } from "lucide-react";
-import Link from "next/link";
+import { Navigation } from "@/components/navigation";
+import { Book } from "lucide-react";
 
 function App() {
   return (
@@ -25,37 +25,10 @@ function App() {
           </p>
         </div>
       </div>
-
       <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation />
+        <Navigation active="conversation" />
       </footer>
     </div>
-  );
-}
-
-function Navigation() {
-  return (
-    <nav className="bg-white border-t border-gray-200 py-2 px-4 w-full">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-around items-center">
-          <Link
-            href="/"
-            className="flex flex-col items-center hover:text-pacamara-secondary no-underline"
-          >
-            <Book className="w-6 h-6" />
-            <span className="text-xs mt-1">Kamus</span>
-          </Link>
-
-          <Link
-            href="/percakapan"
-            className="flex flex-col items-center text-gray-500 text-pacamara-secondary no-underline"
-          >
-            <MessageCircleMore className="w-6 h-6" />
-            <span className="text-xs mt-1">Percakapan</span>
-          </Link>
-        </div>
-      </div>
-    </nav>
   );
 }
 
