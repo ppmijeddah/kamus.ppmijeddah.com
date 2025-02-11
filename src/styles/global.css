@@ -30,25 +30,46 @@ body::-webkit-scrollbar-thumb {
 .gradient-underline {
   line-height: 0.6em;
   vertical-align: 0em;
-  border-bottom: 0.27em solid transparent;
-  -moz-border-image: -moz-linear-gradient(
-    left,
-    theme("colors.pacamara-secondary") 0%,
-    theme("colors.pacamara-accent") 100%
-  );
-  -webkit-border-image: -webkit-linear-gradient(
-    left,
-    theme("colors.pacamara-secondary") 0%,
-    theme("colors.pacamara-accent") 100%
-  );
+  border-bottom: 0.25em solid transparent;
   border-image: linear-gradient(
-    to right,
     theme("colors.pacamara-secondary") 0%,
-    theme("colors.pacamara-accent") 100%
+    theme("colors.pacamara-accent") 50%,
+    theme("colors.pacamara-secondary") 100%
   );
   border-image-slice: 1;
+  animation: moveGradient 3s ease-in-out infinite;
 
   @apply transition-all duration-300;
+}
+
+@keyframes moveGradient {
+  0% {
+    background-position: 0% 50%;
+    border-image: linear-gradient(
+        theme("colors.pacamara-secondary") 0%,
+        theme("colors.pacamara-accent") 50%,
+        theme("colors.pacamara-secondary") 100%
+      )
+      1;
+  }
+  50% {
+    background-position: 100% 50%;
+    border-image: linear-gradient(
+        theme("colors.pacamara-accent") 0%,
+        theme("colors.pacamara-secondary") 50%,
+        theme("colors.pacamara-accent") 100%
+      )
+      1;
+  }
+  100% {
+    background-position: 0% 50%;
+    border-image: linear-gradient(
+        theme("colors.pacamara-secondary") 0%,
+        theme("colors.pacamara-accent") 50%,
+        theme("colors.pacamara-secondary") 100%
+      )
+      1;
+  }
 }
 
 .gradient-underline span {
