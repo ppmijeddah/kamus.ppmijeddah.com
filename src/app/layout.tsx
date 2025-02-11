@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/global.css";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,8 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+    <html lang="id" suppressHydrationWarning>
+      <head>
+        <Script strategy="beforeInteractive" src="/init-theme.js" />
+      </head>
+      <body
+        className={`${inter.variable} antialiased min-h-svh bg-white dark:bg-pacamara-dark font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

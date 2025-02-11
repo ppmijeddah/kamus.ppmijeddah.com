@@ -8,7 +8,7 @@ type NavigationProps = {
 
 export function Navigation(props: NavigationProps) {
   return (
-    <nav className="bg-white border-t border-gray-200 py-2 px-4 w-full">
+    <nav className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-900 py-2 px-4 w-full">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-around items-center">
           <Link

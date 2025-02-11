@@ -9,6 +9,11 @@ html {
   scrollbar-width: auto;
 }
 
+html.dark {
+  scrollbar-color: theme("colors.pacamara-secondary")
+    theme("colors.pacamara-dark");
+}
+
 body::-webkit-scrollbar {
   width: 14px;
 }
