@@ -1,5 +1,6 @@
 import { Book } from "lucide-react";
 import { ThemeToggler } from "./theme-toggler";
+import Link from "next/link";
 
 export function Header() {
   return (
@@ -13,7 +14,13 @@ export function Header() {
             </span>
           </h1>
           <span className="absolute right-0 top-[-1rem] text-xs text-pacamara-secondary">
-            by ppmijeddah.com
+            by{" "}
+            <Link
+              href="https://ppmijeddah.com"
+              className="cursor-pointer text-pacamara-secondary no-underline"
+            >
+              ppmijeddah.com
+            </Link>
           </span>
         </div>
       </div>
