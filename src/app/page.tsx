@@ -31,7 +31,7 @@ function App() {
   );
 
   return (
-    <div className="pt-6 pb-24">
+    <div className="pt-16 pb-24">
       <div className="relative max-w-4xl mx-auto">
         <Header />
 

@@ -35,7 +35,7 @@ body::-webkit-scrollbar-thumb {
 .gradient-underline {
   line-height: 0.6em;
   vertical-align: 0em;
-  border-bottom: 0.25em solid transparent;
+  border-bottom: 0.15em solid transparent;
   border-image: linear-gradient(
     theme("colors.pacamara-secondary") 0%,
     theme("colors.pacamara-accent") 50%,
@@ -79,6 +79,12 @@ body::-webkit-scrollbar-thumb {
 
 .gradient-underline span {
   vertical-align: -0.38em;
+}
+
+@media screen and (min-width: 768px) {
+  .gradient-underline {
+    border-bottom: 0.25em solid transparent;
+  }
 }
 
 .font-arabic {
