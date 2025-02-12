@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Kamus Amiyah Saudi <> Indo",
+  title: "Kamus Amiyah Saudi | PPMI Jeddah",
   description: "Kamus Bahasa Arab Lokal Saudi Arabia",
 };
 
