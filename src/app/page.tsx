@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import type { DictionaryEntry } from "@/types";
-import entriesJson from "@/__generated__/dictionary.json";
+import entriesJsonIdAm from "@/__generated__/dictionary_id_am.json";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import { Navigation } from "@/components/navigation";
@@ -11,7 +11,7 @@ import { Header } from "@/components/header";
 
 function App() {
   const [entries] = useState<DictionaryEntry[]>(
-    entriesJson as DictionaryEntry[]
+    entriesJsonIdAm as DictionaryEntry[]
   );
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -25,9 +25,9 @@ function App() {
 
   const filteredEntries = entries.filter(
     (entry) =>
-      entry.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.indonesia.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.fushah.toLowerCase().includes(searchTerm.toLowerCase())
+      entry.word.includes(searchTerm.toLowerCase()) ||
+      entry.indonesia.includes(searchTerm.toLowerCase()) ||
+      entry.fushah.includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -77,7 +77,7 @@ function DictionaryList({ entries }: { entries: DictionaryEntry[] }) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-              {entry.word}
+              {entry.indonesia}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 font-arabic mt-1">
               {entry.amiyah_arab}
@@ -85,7 +85,7 @@ function DictionaryList({ entries }: { entries: DictionaryEntry[] }) {
           </div>
           <div className="text-right">
             <p className="text-lg text-pacamara-secondary font-semibold">
-              {entry.indonesia}
+              {entry.word}
             </p>
           </div>
         </div>
