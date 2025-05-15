@@ -1,5 +1,5 @@
+import { ThemeToggler } from "@/services/theme";
 import { Book } from "lucide-react";
-import { ThemeToggler } from "./theme-toggler";
 import Link from "next/link";
 
 export function Header() {

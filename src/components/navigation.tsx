@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { Book, MessageCircleMore } from "lucide-react";
+import { Book, MessageCircleMore, Bookmark } from "lucide-react";
 import clsx from "clsx";
+import { SavedBadge } from "../modules/saved/components/saved-badge";
+import { ReactNode } from "react";
 
 type NavigationProps = {
-  active: "dictionary" | "conversation";
+  active: "dictionary" | "conversation" | "saved";
 };
 
 export function Navigation(props: NavigationProps) {
@@ -11,31 +13,67 @@ export function Navigation(props: NavigationProps) {
     <nav className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-900 py-2 px-4 w-full">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-around items-center">
-          <Link
+          <NavigationItem
             href="/"
-            className={clsx("flex flex-col items-center no-underline", {
-              "text-pacamara-secondary": props.active === "dictionary",
-              "text-gray-500": props.active !== "dictionary",
-              "hover:text-pacamara-secondary": props.active !== "dictionary",
-            })}
-          >
-            <Book className="w-6 h-6" />
-            <span className="text-xs mt-1">Kamus</span>
-          </Link>
+            label="Kamus"
+            icon={<Book className="w-6 h-6" />}
+            isActive={props.active === "dictionary"}
+          />
 
-          <Link
-            href="/percakapan"
-            className={clsx("flex flex-col items-center no-underline", {
-              "text-pacamara-secondary": props.active === "conversation",
-              "text-gray-500": props.active !== "conversation",
-              "hover:text-pacamara-secondary": props.active !== "conversation",
-            })}
+          <NavigationItem
+            href="/tersimpan"
+            label="Tersimpan"
+            icon={<Bookmark className="w-6 h-6" />}
+            isActive={props.active === "saved"}
           >
-            <MessageCircleMore className="w-6 h-6" />
-            <span className="text-xs mt-1">Percakapan</span>
-          </Link>
+            <SavedBadge />
+          </NavigationItem>
+
+          <NavigationItem
+            href="/percakapan"
+            label="Percakapan"
+            icon={<MessageCircleMore className="w-6 h-6" />}
+            isActive={props.active === "conversation"}
+          />
         </div>
       </div>
     </nav>
+  );
+}
+
+type NavigationItemProps = {
+  href: string;
+  label: string;
+  icon: ReactNode;
+  isActive: boolean;
+  className?: string;
+  children?: ReactNode;
+};
+
+function NavigationItem({
+  href,
+  label,
+  icon,
+  isActive,
+  className,
+  children,
+}: NavigationItemProps) {
+  return (
+    <Link
+      href={href}
+      className={clsx(
+        "flex flex-col items-center no-underline relative",
+        {
+          "text-pacamara-secondary": isActive,
+          "text-gray-500": !isActive,
+          "hover:text-pacamara-secondary": !isActive,
+        },
+        className,
+      )}
+    >
+      {children}
+      {icon}
+      <span className="text-xs mt-1">{label}</span>
+    </Link>
   );
 }
