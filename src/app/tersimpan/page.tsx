@@ -1,19 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Search } from "lucide-react";
-import type { DictionaryEntry } from "@/types";
-import entriesJsonIdAm from "@/__generated__/dictionary_id_am.json";
-import { useCallback } from "react";
-import debounce from "lodash.debounce";
 import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
 import { DictionaryList } from "@/modules/dictionary/dictionary-list";
+import { useSavedStore } from "@/modules/saved/store/saved-store";
+import debounce from "lodash.debounce";
 
-function App() {
-  const [entries] = useState<DictionaryEntry[]>(
-    entriesJsonIdAm as DictionaryEntry[],
-  );
+function SavedPage() {
+  const saved = useSavedStore((state) => state.saved);
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = useCallback(
@@ -24,7 +20,7 @@ function App() {
     [],
   );
 
-  const filteredEntries = entries.filter(
+  const filteredSaved = saved.filter(
     (entry) =>
       entry.word.includes(searchTerm.toLowerCase()) ||
       entry.indonesia.includes(searchTerm.toLowerCase()) ||
@@ -41,7 +37,7 @@ function App() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
             <input
               type="text"
-              placeholder="Cari kata..."
+              placeholder="Cari tersimpan..."
               onChange={handleSearch}
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-400 bg-transparent dark:text-white focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-600 outline-none transition-colors text-lg"
             />
@@ -49,15 +45,22 @@ function App() {
         </div>
 
         <div className="space-y-4 px-4">
-          <DictionaryList entries={filteredEntries} />
+          <DictionaryList
+            entries={filteredSaved}
+            emptyMessage={
+              searchTerm
+                ? "Tidak ada kata tersimpan yang cocok dengan pencarian Anda."
+                : "Belum ada kata tersimpan. Tambahkan dengan menekan ikon bookmark pada entri kamus."
+            }
+          />
         </div>
       </div>
 
       <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation active="dictionary" />
+        <Navigation active="saved" />
       </footer>
     </div>
   );
 }
 
-export default App;
+export default SavedPage;
