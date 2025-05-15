@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/global.css";
-import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        <Script strategy="beforeInteractive" src="/init-theme.js" />
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/init-theme.js" />
       </head>
       <body
         className={`${inter.variable} antialiased min-h-svh bg-white dark:bg-pacamara-dark font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0`}
