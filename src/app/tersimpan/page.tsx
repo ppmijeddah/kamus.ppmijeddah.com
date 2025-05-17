@@ -20,12 +20,31 @@ function SavedPage() {
     [],
   );
 
-  const filteredSaved = saved.filter(
-    (entry) =>
-      entry.word.includes(searchTerm.toLowerCase()) ||
-      entry.indonesia.includes(searchTerm.toLowerCase()) ||
-      entry.fushah.includes(searchTerm.toLowerCase()),
-  );
+  const filteredSaved = saved
+    .filter((entry) => {
+      if (!searchTerm) return true;
+
+      const term = searchTerm.toLowerCase();
+      return (
+        entry.word?.toLowerCase().includes(term) ||
+        false ||
+        entry.indonesia?.toLowerCase().includes(term) ||
+        false ||
+        entry.fushah?.toLowerCase().includes(term) ||
+        false ||
+        entry.amiyah_arab?.toLowerCase().includes(term) ||
+        false ||
+        entry.fushah_arab?.toLowerCase().includes(term) ||
+        false ||
+        entry.contoh?.toLowerCase().includes(term) ||
+        false
+      );
+    })
+    .sort((a, b) => {
+      return (a.indonesia || "")
+        .toLowerCase()
+        .localeCompare((b.indonesia || "").toLowerCase());
+    });
 
   return (
     <div className="pt-16 pb-24">
