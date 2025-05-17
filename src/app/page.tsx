@@ -41,7 +41,6 @@ function App() {
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       const newQuery = e.target.value;
-      // Update URL with the search query
       const params = new URLSearchParams(searchParams.toString());
 
       if (newQuery) {
