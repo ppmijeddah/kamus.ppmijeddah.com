@@ -65,6 +65,7 @@ function SavedPageContainer() {
 
         <div className="space-y-4 px-4">
           <DictionaryList
+            searchQuery={searchTerm}
             entries={filteredSaved}
             emptyMessage={
               searchTerm
