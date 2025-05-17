@@ -14,12 +14,18 @@
     "types": "tsc --noEmit"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.76.1",
+    "@tanstack/react-query-devtools": "^5.76.1",
+    "better-sqlite3": "^11.10.0",
     "clsx": "^2.1.1",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.475.0",
+    "motion": "^12.12.1",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "zustand": "^5.0.4"
   },
   "devDependencies": {
