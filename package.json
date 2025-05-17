@@ -14,6 +14,8 @@
     "types": "tsc --noEmit"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.76.1",
+    "@tanstack/react-query-devtools": "^5.76.1",
     "better-sqlite3": "^11.10.0",
     "clsx": "^2.1.1",
     "lodash.debounce": "^4.0.8",

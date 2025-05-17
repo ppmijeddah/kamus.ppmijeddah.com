@@ -1,42 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
 import { DictionaryList } from "@/modules/dictionary/dictionary-list";
-import { DictionaryEntry } from "@/domain/dictionary";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDictionaryEntries } from "@/modules/dictionary/api/use-dictionary";
 
 function App() {
-  const [entries, setEntries] = useState<DictionaryEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
 
-  const fetchEntries = useCallback(async (searchQuery?: string) => {
-    setIsLoading(true);
-    try {
-      const apiUrl = searchQuery
-        ? `/api/dictionary?q=${encodeURIComponent(searchQuery)}`
-        : "/api/dictionary";
-
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      setEntries(data.entries || []);
-    } catch (error) {
-      console.error("Failed to fetch entries:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchEntries(query);
-  }, [fetchEntries, query]);
+  const {
+    data: entries = [],
+    isLoading,
+    isError,
+    error,
+  } = useDictionaryEntries(query);
 
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +34,6 @@ function App() {
 
       router.replace(`?${params.toString()}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
-      // Note: No need to call fetchEntries here as it will be triggered by the useEffect when query changes
     }, 500),
     [router, searchParams],
   );
@@ -75,7 +57,18 @@ function App() {
         </div>
 
         <div className="space-y-4 px-4">
-          <DictionaryList entries={entries} isLoading={isLoading} />
+          {isError ? (
+            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+              <p className="text-red-600 dark:text-red-400 text-lg">
+                Error:{" "}
+                {error instanceof Error
+                  ? error.message
+                  : "Failed to load dictionary entries"}
+              </p>
+            </div>
+          ) : (
+            <DictionaryList entries={entries} isLoading={isLoading} />
+          )}
         </div>
       </div>
 
