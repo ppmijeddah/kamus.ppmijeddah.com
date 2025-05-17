@@ -1,34 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
-import type { DictionaryEntry } from "@/types";
-import entriesJsonIdAm from "@/__generated__/dictionary_id_am.json";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
 import { DictionaryList } from "@/modules/dictionary/dictionary-list";
+import { DictionaryEntry } from "@/domain/dictionary";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function App() {
-  const [entries] = useState<DictionaryEntry[]>(
-    entriesJsonIdAm as DictionaryEntry[],
-  );
-  const [searchTerm, setSearchTerm] = useState("");
+  const [entries, setEntries] = useState<DictionaryEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "";
+
+  const fetchEntries = useCallback(async (searchQuery?: string) => {
+    setIsLoading(true);
+    try {
+      const apiUrl = searchQuery
+        ? `/api/dictionary?q=${encodeURIComponent(searchQuery)}`
+        : "/api/dictionary";
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      setEntries(data.entries || []);
+    } catch (error) {
+      console.error("Failed to fetch entries:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEntries(query);
+  }, [fetchEntries, query]);
 
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(e.target.value);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 500),
-    [],
-  );
+      const newQuery = e.target.value;
+      // Update URL with the search query
+      const params = new URLSearchParams(searchParams.toString());
 
-  const filteredEntries = entries.filter(
-    (entry) =>
-      entry.word.includes(searchTerm.toLowerCase()) ||
-      entry.indonesia.includes(searchTerm.toLowerCase()) ||
-      entry.fushah.includes(searchTerm.toLowerCase()),
+      if (newQuery) {
+        params.set("q", newQuery);
+      } else {
+        params.delete("q");
+      }
+
+      router.replace(`?${params.toString()}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Note: No need to call fetchEntries here as it will be triggered by the useEffect when query changes
+    }, 500),
+    [router, searchParams],
   );
 
   return (
@@ -43,13 +69,14 @@ function App() {
               type="text"
               placeholder="Cari kata..."
               onChange={handleSearch}
+              defaultValue={query}
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-400 bg-transparent dark:text-white focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-600 outline-none transition-colors text-lg"
             />
           </div>
         </div>
 
         <div className="space-y-4 px-4">
-          <DictionaryList entries={filteredEntries} />
+          <DictionaryList entries={entries} isLoading={isLoading} />
         </div>
       </div>
 

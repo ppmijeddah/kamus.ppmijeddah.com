@@ -1,6 +1,6 @@
 "use client";
 
-import { DictionaryEntry } from "@/types";
+import { DictionaryEntry } from "@/domain/dictionary";
 import { Bookmark } from "lucide-react";
 import { useSavedStore } from "@/modules/saved/store/saved-store";
 import { useState, useRef } from "react";

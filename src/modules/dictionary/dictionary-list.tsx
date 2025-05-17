@@ -1,15 +1,28 @@
-import { DictionaryEntry } from "@/types";
+import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryCard } from "./dictionary-card";
 
 interface DictionaryListProps {
   entries: DictionaryEntry[];
   emptyMessage?: string;
+  isLoading?: boolean;
 }
 
 export function DictionaryList({
   entries,
   emptyMessage = "Tidak ada kata yang cocok dengan pencarian Anda.",
+  isLoading = false,
 }: DictionaryListProps) {
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <DictionaryCard isLoading />
+        <DictionaryCard isLoading />
+        <DictionaryCard isLoading />
+        <DictionaryCard isLoading />
+      </div>
+    );
+  }
+
   if (entries.length === 0) {
     return (
       <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
@@ -22,8 +35,8 @@ export function DictionaryList({
 
   return (
     <div className="space-y-4">
-      {entries.map((entry, index) => (
-        <DictionaryCard key={index} entry={entry} />
+      {entries.map((entry) => (
+        <DictionaryCard key={entry.id || Math.random()} entry={entry} />
       ))}
     </div>
   );

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { DictionaryEntry } from "@/types";
+import type { DictionaryEntry } from "@/domain/dictionary";
 
 interface SavedState {
   saved: DictionaryEntry[];

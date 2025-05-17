@@ -1,58 +1,96 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require("fs").promises;
 const path = require("path");
-
-main();
+const sqlite3 = require("sqlite3").verbose();
+const { open } = require("sqlite");
 
 async function main() {
-  const root = path.join(__dirname, "..");
   const input = path.join(__dirname, "./dictionary.csv");
-  const output_am_to_id = path.join(
-    root,
-    `./__generated__/dictionary_am_id.json`
-  );
-  const output_id_to_am = path.join(
-    root,
-    `./__generated__/dictionary_id_am.json`
-  );
-  const output_fs_to_am = path.join(
-    root,
-    `./__generated__/dictionary_fs_am.json`
-  );
 
-  console.log(`Parsing dictionary csv in ${input}`);
+  // Use the same database path as defined in services/db/lib.ts
+  const dbPath = path.join(process.cwd(), "dictionary.db");
 
+  console.log(`Parsing dictionary CSV in ${input}`);
+  console.log(`Storing in SQLite database: ${dbPath}`);
+
+  const db = await open({
+    filename: dbPath,
+    driver: sqlite3.Database,
+  });
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS dictionary_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      word TEXT NOT NULL,
+      amiyah_arab TEXT NOT NULL,
+      indonesia TEXT NOT NULL,
+      fushah TEXT NOT NULL,
+      fushah_arab TEXT NOT NULL,
+      contoh TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_word ON dictionary_entries(word COLLATE NOCASE);
+    CREATE INDEX IF NOT EXISTS idx_indonesia ON dictionary_entries(indonesia COLLATE NOCASE);
+    CREATE INDEX IF NOT EXISTS idx_fushah ON dictionary_entries(fushah COLLATE NOCASE);
+    CREATE INDEX IF NOT EXISTS idx_contoh ON dictionary_entries(contoh COLLATE NOCASE);
+  `);
+
+  console.log("Clearing existing dictionary entries...");
+  await db.run("DELETE FROM dictionary_entries");
+
+  // Parse CSV
   const text = await fs.readFile(input, "utf8");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, ...lines] = text.split("\n");
+  const [header, ...lines] = text.split("\n");
 
-  const am_to_id = lines
-    .filter((line) => line.trim())
-    .map((line) => {
-      const [word, amiyah_arab, indonesia, fushah, fushah_arab, contoh] =
-        line.split(",");
-      return {
-        word: word.toLowerCase(),
-        amiyah_arab: amiyah_arab.toLowerCase(),
-        indonesia: indonesia.toLowerCase(),
-        fushah: fushah.toLowerCase(),
-        fushah_arab: fushah_arab.toLowerCase(),
-        contoh: contoh.toLowerCase(),
-      };
-    });
-  const id_to_am = [...am_to_id].sort((a, b) =>
-    a.indonesia.localeCompare(b.indonesia)
+  console.log(`Found ${lines.length} entries to import`);
+
+  const insert = await db.prepare(`
+    INSERT INTO dictionary_entries (word, amiyah_arab, indonesia, fushah, fushah_arab, contoh)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `);
+
+  await db.run("BEGIN TRANSACTION");
+
+  let importedCount = 0;
+  for (const line of lines) {
+    if (!line.trim()) continue;
+
+    const [word, amiyah_arab, indonesia, fushah, fushah_arab, contoh] =
+      line.split(",");
+
+    try {
+      await insert.run(
+        word.toLowerCase().trim(),
+        amiyah_arab.trim(),
+        indonesia.toLowerCase().trim(),
+        fushah.toLowerCase().trim(),
+        fushah_arab.trim(),
+        contoh.toLowerCase().trim(),
+      );
+      importedCount++;
+    } catch (error) {
+      console.error(`Error importing entry "${word}":`, error);
+    }
+  }
+
+  await db.run("COMMIT");
+  await insert.finalize();
+
+  console.log(
+    `Successfully imported ${importedCount} dictionary entries into SQLite database`,
   );
-  const fs_to_am = [...am_to_id].sort((a, b) =>
-    a.fushah.localeCompare(b.fushah)
+
+  const count = await db.get(
+    "SELECT COUNT(*) as count FROM dictionary_entries",
   );
+  console.log(`Total entries in database: ${count.count}`);
 
-  await fs.mkdir(path.dirname(output_am_to_id), { recursive: true });
-  await fs.mkdir(path.dirname(output_id_to_am), { recursive: true });
-  await fs.mkdir(path.dirname(output_fs_to_am), { recursive: true });
-  await fs.writeFile(output_am_to_id, JSON.stringify(am_to_id));
-  await fs.writeFile(output_id_to_am, JSON.stringify(id_to_am));
-  await fs.writeFile(output_fs_to_am, JSON.stringify(fs_to_am));
-
-  console.log(`Generated dictionary json file to .src/__generated__`);
+  await db.close();
 }
+
+main().catch((err) => {
+  console.error("Error in import process:", err);
+  process.exit(1);
+});
