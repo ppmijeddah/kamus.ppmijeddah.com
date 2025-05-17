@@ -8,12 +8,14 @@ interface DictionaryListProps {
   entries: DictionaryEntry[];
   emptyMessage?: string;
   isLoading?: boolean;
+  searchQuery?: string;
 }
 
 export function DictionaryList({
   entries,
   emptyMessage = "Tidak ada kata yang cocok dengan pencarian Anda.",
   isLoading = false,
+  searchQuery = "",
 }: DictionaryListProps) {
   // Local state to delay the removal of loading skeletons
   const [showLoading, setShowLoading] = useState(() => isLoading);
@@ -58,7 +60,11 @@ export function DictionaryList({
         <FadeTransition key="content" duration={0.5}>
           <div className="space-y-4">
             {entries.map((entry) => (
-              <DictionaryCard key={entry.id || Math.random()} entry={entry} />
+              <DictionaryCard
+                key={entry.id || Math.random()}
+                entry={entry}
+                searchQuery={searchQuery}
+              />
             ))}
           </div>
         </FadeTransition>

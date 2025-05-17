@@ -1,14 +1,17 @@
 import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryCardBookmark } from "../saved/components/dictionary-card-bookmark";
+import { HighlightText } from "./highlight-text";
 
 interface DictionaryCardProps {
   entry?: DictionaryEntry;
   isLoading?: boolean;
+  searchQuery?: string;
 }
 
 export function DictionaryCard({
   entry,
   isLoading = false,
+  searchQuery = "",
 }: DictionaryCardProps) {
   if (isLoading) {
     return (
@@ -55,15 +58,19 @@ export function DictionaryCard({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-              {entry?.indonesia}
+              {entry && (
+                <HighlightText text={entry.indonesia} query={searchQuery} />
+              )}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 font-arabic mt-1">
-              {entry?.amiyah_arab}
+              {entry && (
+                <HighlightText text={entry.amiyah_arab} query={searchQuery} />
+              )}
             </p>
           </div>
           <div className="text-right">
             <p className="text-lg text-pacamara-secondary font-semibold">
-              {entry?.word}
+              {entry && <HighlightText text={entry.word} query={searchQuery} />}
             </p>
           </div>
         </div>
@@ -74,10 +81,14 @@ export function DictionaryCard({
           </h3>
           <div className="flex items-center justify-between">
             <p className="text-lg text-gray-800 dark:text-white">
-              {entry?.fushah}
+              {entry && (
+                <HighlightText text={entry.fushah} query={searchQuery} />
+              )}
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-300 font-arabic">
-              {entry?.fushah_arab}
+              {entry && (
+                <HighlightText text={entry.fushah_arab} query={searchQuery} />
+              )}
             </p>
           </div>
         </div>
@@ -87,7 +98,11 @@ export function DictionaryCard({
             <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">
               Contoh Penggunaan:
             </h3>
-            <p className="text-gray-700 dark:text-gray-300">{entry?.contoh}</p>
+            <p className="text-gray-700 dark:text-gray-300">
+              {entry && (
+                <HighlightText text={entry.contoh} query={searchQuery} />
+              )}
+            </p>
           </div>
 
           {entry && <DictionaryCardBookmark entry={entry} />}

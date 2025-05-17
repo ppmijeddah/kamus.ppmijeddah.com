@@ -67,7 +67,11 @@ function App() {
               </p>
             </div>
           ) : (
-            <DictionaryList entries={entries} isLoading={isLoading} />
+            <DictionaryList
+              entries={entries}
+              isLoading={isLoading}
+              searchQuery={query}
+            />
           )}
         </div>
       </div>
