@@ -24,7 +24,6 @@ export function DictionaryList({
     if (isLoading) {
       setShowLoading(true);
     } else {
-      // Delay hiding the loading state by 800ms after data arrives
       const timer = setTimeout(() => {
         setShowLoading(false);
       }, 800);
