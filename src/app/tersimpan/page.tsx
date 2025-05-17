@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
-import { DictionaryList } from "@/modules/dictionary/dictionary-list";
+import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useSavedStore } from "@/modules/saved/store/saved-store";
 import debounce from "lodash.debounce";
 

@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
-import { DictionaryList } from "@/modules/dictionary/dictionary-list";
+import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDictionaryEntries } from "@/modules/dictionary/api/use-dictionary";
 

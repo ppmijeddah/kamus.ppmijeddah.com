@@ -1,5 +1,5 @@
 import { DictionaryEntry } from "@/domain/dictionary";
-import { DictionaryCardBookmark } from "../saved/components/dictionary-card-bookmark";
+import { DictionaryCardBookmark } from "../../saved/components/dictionary-card-bookmark";
 import { HighlightText } from "./highlight-text";
 
 interface DictionaryCardProps {
