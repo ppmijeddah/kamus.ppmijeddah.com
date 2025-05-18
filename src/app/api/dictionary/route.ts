@@ -3,6 +3,8 @@ import { searchEntries, getAllEntries } from "@/services/db/dictionary";
 import { DictionaryEntry } from "@/domain/dictionary";
 import { transformToDomain } from "@/services/db/dictionary/transform";
 
+export const runtime = "edge";
+
 export async function GET(
   request: NextRequest,
 ): Promise<NextResponse<{ entries: DictionaryEntry[] } | { error: string }>> {
