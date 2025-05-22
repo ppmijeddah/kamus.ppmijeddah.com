@@ -1,9 +1,10 @@
 export type DictionaryEntry = {
-  id?: number;
-  word: string;
+  id: number;
+  amiyah: string;
   amiyah_arab: string;
   indonesia: string;
   fushah: string;
   fushah_arab: string;
-  contoh: string;
+  category: string;
+  example: string;
 };

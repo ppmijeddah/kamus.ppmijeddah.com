@@ -70,7 +70,9 @@ export function DictionaryCard({
           </div>
           <div className="text-right">
             <p className="text-lg text-pacamara-secondary font-semibold">
-              {entry && <HighlightText text={entry.word} query={searchQuery} />}
+              {entry && (
+                <HighlightText text={entry.amiyah} query={searchQuery} />
+              )}
             </p>
           </div>
         </div>
@@ -100,7 +102,7 @@ export function DictionaryCard({
             </h3>
             <p className="text-gray-700 dark:text-gray-300">
               {entry && (
-                <HighlightText text={entry.contoh} query={searchQuery} />
+                <HighlightText text={entry.example} query={searchQuery} />
               )}
             </p>
           </div>

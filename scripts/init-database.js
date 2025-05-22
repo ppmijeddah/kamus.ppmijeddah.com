@@ -28,19 +28,20 @@ async function initDb() {
   await db.exec(`
     CREATE TABLE IF NOT EXISTS dictionary_entries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      word TEXT NOT NULL,
-      amiyah_arab TEXT NOT NULL,
       indonesia TEXT NOT NULL,
+      amiyah TEXT NOT NULL,
+      amiyah_arab TEXT NOT NULL,
       fushah TEXT NOT NULL,
       fushah_arab TEXT NOT NULL,
-      contoh TEXT NOT NULL,
+      category TEXT NOT NULL,
+      example TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    CREATE INDEX IF NOT EXISTS idx_word ON dictionary_entries(word COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_indonesia ON dictionary_entries(indonesia COLLATE NOCASE);
+    CREATE INDEX IF NOT EXISTS idx_amiyah ON dictionary_entries(amiyah COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_fushah ON dictionary_entries(fushah COLLATE NOCASE);
-    CREATE INDEX IF NOT EXISTS idx_amiyah_arab ON dictionary_entries(amiyah_arab);
+    CREATE INDEX IF NOT EXISTS idx_category ON dictionary_entries(category COLLATE NOCASE);
   `);
 
   const count = await db.get(
@@ -66,8 +67,8 @@ async function loadDictionaryData(db) {
     await db.run("BEGIN TRANSACTION");
 
     const insert = await db.prepare(`
-      INSERT INTO dictionary_entries (word, amiyah_arab, indonesia, fushah, fushah_arab, contoh)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO dictionary_entries (indonesia, amiyah, amiyah_arab, fushah, fushah_arab, category, example)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
     let importedCount = 0;
@@ -76,17 +77,25 @@ async function loadDictionaryData(db) {
       const line = lines[i].trim();
       if (!line) continue;
 
-      const [word, amiyah_arab, indonesia, fushah, fushah_arab, contoh] =
-        line.split(",");
+      const [
+        indonesia,
+        amiyah,
+        amiyah_arab,
+        fushah,
+        fushah_arab,
+        category,
+        example,
+      ] = line.split(",");
 
-      if (word) {
+      if (indonesia) {
         await insert.run(
-          word.toLowerCase().trim(),
+          indonesia.toLowerCase().trim(),
+          amiyah?.trim() || "",
           amiyah_arab?.trim() || "",
-          indonesia?.toLowerCase().trim() || "",
           fushah?.toLowerCase().trim() || "",
           fushah_arab?.trim() || "",
-          contoh?.toLowerCase().trim() || "",
+          category?.trim() || "",
+          example?.trim() || "",
         );
         importedCount++;
       }

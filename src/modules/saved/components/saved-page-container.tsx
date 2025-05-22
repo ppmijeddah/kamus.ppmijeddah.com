@@ -26,18 +26,13 @@ function SavedPageContainer() {
 
       const term = searchTerm.toLowerCase();
       return (
-        entry.word?.toLowerCase().includes(term) ||
-        false ||
+        entry.amiyah?.toLowerCase().includes(term) ||
         entry.indonesia?.toLowerCase().includes(term) ||
-        false ||
         entry.fushah?.toLowerCase().includes(term) ||
-        false ||
         entry.amiyah_arab?.toLowerCase().includes(term) ||
-        false ||
         entry.fushah_arab?.toLowerCase().includes(term) ||
-        false ||
-        entry.contoh?.toLowerCase().includes(term) ||
-        false
+        entry.example?.toLowerCase().includes(term) ||
+        entry.category?.toLowerCase().includes(term)
       );
     })
     .sort((a, b) => {
