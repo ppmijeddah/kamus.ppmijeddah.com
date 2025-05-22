@@ -54,13 +54,19 @@ export function DictionaryCard({
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
       <div className="space-y-4">
         <div className="flex flex-col gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
               {entry && (
                 <HighlightText text={entry.indonesia} query={searchQuery} />
               )}
             </h2>
+            {entry && entry.category && (
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-full ml-3 whitespace-nowrap">
+                <HighlightText text={entry.category} query={searchQuery} />
+              </span>
+            )}
           </div>
+
           <div className="text-right flex items-center justify-between">
             <p className="text-lg text-gray-800 dark:text-white">
               {entry && (
