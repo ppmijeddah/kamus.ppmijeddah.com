@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "npm run init && next build",
+    "build": "npm run init && next build && npm run init:db",
     "dev": "npm run init && npm run init:db && next dev --turbopack",
     "init": "node ./scripts/validate-dictionary.js",
     "init:db": "node ./scripts/init-database.js",
     "lint": "next lint",
-    "start": "npm run init:db && next start",
+    "start": "next start",
     "types": "tsc --noEmit"
   },
   "dependencies": {

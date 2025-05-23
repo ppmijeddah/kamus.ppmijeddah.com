@@ -1,4 +1,4 @@
-import { getDb } from "../lib";
+import { getDb } from "@/lib/sqlite";
 import { DTO_DictionaryEntry } from "./dto";
 
 export async function getAllEntries(): Promise<DTO_DictionaryEntry[]> {
