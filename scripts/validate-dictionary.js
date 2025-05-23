@@ -3,7 +3,7 @@ const fs = require("fs").promises;
 const path = require("path");
 
 async function main() {
-  const input = path.join(__dirname, "./dictionary.csv");
+  const input = path.join(process.cwd(), "./data/dictionary.csv");
 
   console.log(`Validating dictionary CSV in ${input}`);
 

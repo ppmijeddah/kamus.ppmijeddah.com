@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "build": "npm run init && next build",
-    "dev": "npm run init && next dev --turbopack",
-    "init": "node ./src/scripts/parse-dictionary.js",
+    "dev": "npm run init && npm run init:db && next dev --turbopack",
+    "init": "node ./scripts/validate-dictionary.js",
+    "init:db": "node ./scripts/init-database.js",
     "lint": "next lint",
-    "start": "next start",
+    "start": "npm run init:db && next start",
     "types": "tsc --noEmit"
   },
   "dependencies": {
