@@ -46,7 +46,15 @@ function SavedPageContainer() {
       <div className="relative max-w-4xl mx-auto">
         <Header />
 
-        <SearchFilter onChange={handleSearch} defaultValue={searchTerm} />
+        <SearchFilter
+          onChange={handleSearch}
+          defaultValue={searchTerm}
+          categories={[
+            { id: 1, name: "Wajib tahu" },
+            { id: 2, name: "Arah dan jalan" },
+            { id: 3, name: "Belanja dan harga" },
+          ]}
+        />
 
         <div className="space-y-4 px-4">
           <DictionaryList
