@@ -5,6 +5,7 @@ export type DictionaryEntry = {
   indonesia: string;
   fushah: string;
   fushah_arab: string;
-  category: string;
+  category_id?: string;
+  category_name?: string;
   example: string;
 };

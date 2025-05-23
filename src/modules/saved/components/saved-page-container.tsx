@@ -32,7 +32,7 @@ function SavedPageContainer() {
         entry.amiyah_arab?.toLowerCase().includes(term) ||
         entry.fushah_arab?.toLowerCase().includes(term) ||
         entry.example?.toLowerCase().includes(term) ||
-        entry.category?.toLowerCase().includes(term)
+        entry.category_name?.toLowerCase().includes(term)
       );
     })
     .sort((a, b) => {

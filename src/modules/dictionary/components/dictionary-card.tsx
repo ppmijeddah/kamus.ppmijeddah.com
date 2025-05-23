@@ -19,7 +19,8 @@ export function DictionaryCard({
         <div className="animate-pulse space-y-16">
           {/* Header */}
           <div className="flex flex-col gap-4">
-            <div>
+            <div className="flex justify-between">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-2/4"></div>
               <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
             </div>
             <div className="text-right flex items-center justify-between">
@@ -60,9 +61,9 @@ export function DictionaryCard({
                 <HighlightText text={entry.indonesia} query={searchQuery} />
               )}
             </h2>
-            {entry && entry.category && (
+            {entry && entry.category_name && (
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-full ml-3 whitespace-nowrap">
-                <HighlightText text={entry.category} query={searchQuery} />
+                <HighlightText text={entry.category_name} query={searchQuery} />
               </span>
             )}
           </div>
