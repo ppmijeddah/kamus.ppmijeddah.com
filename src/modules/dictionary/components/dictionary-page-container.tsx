@@ -8,18 +8,22 @@ import { DictionaryList } from "@/modules/dictionary/components/dictionary-list"
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDictionaryEntries } from "@/modules/dictionary/api/use-dictionary";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
+import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 
 function DictionaryPageContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
+  const categoryId = searchParams.get("category")
+    ? parseInt(searchParams.get("category") || "0", 10)
+    : undefined;
 
   const {
     data: entries = [],
     isLoading,
     isError,
     error,
-  } = useDictionaryEntries(query);
+  } = useDictionaryEntries(query, categoryId);
 
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +42,22 @@ function DictionaryPageContainer() {
     [router, searchParams],
   );
 
+  const handleCategoryChange = useCallback(
+    (newCategoryId: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (newCategoryId) {
+        params.set("category", newCategoryId.toString());
+      } else {
+        params.delete("category");
+      }
+
+      router.replace(`?${params.toString()}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [router, searchParams],
+  );
+
   return (
     <div className="pt-16 pb-24">
       <div className="relative max-w-4xl mx-auto">
@@ -51,6 +71,8 @@ function DictionaryPageContainer() {
             { id: 2, name: "Arah dan jalan" },
             { id: 3, name: "Belanja dan harga" },
           ]}
+          selectedCategoryId={categoryId}
+          onCategoryChange={handleCategoryChange}
         />
 
         <div className="space-y-4 px-4">
@@ -60,7 +82,7 @@ function DictionaryPageContainer() {
                 Error:{" "}
                 {error instanceof Error
                   ? error.message
-                  : "Failed to load dictionary entries"}
+                  : "Gagal mendapatkan data kamus"}
               </p>
             </div>
           ) : (
@@ -68,6 +90,7 @@ function DictionaryPageContainer() {
               entries={entries}
               isLoading={isLoading}
               searchQuery={query}
+              emptyMessage={getEmptyMessage(query, categoryId)}
             />
           )}
         </div>

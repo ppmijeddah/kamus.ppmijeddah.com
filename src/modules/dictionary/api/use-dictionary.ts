@@ -8,18 +8,23 @@ interface DictionaryResponse {
   error?: string;
 }
 
-export function useDictionaryEntries(query?: string) {
+export function useDictionaryEntries(query?: string, categoryId?: number) {
   return useQuery({
-    queryKey: ["dictionaryEntries", query],
-    queryFn: () => fetchDictionaryEntries(query),
+    queryKey: ["dictionaryEntries", query, categoryId],
+    queryFn: () => fetchDictionaryEntries(query, categoryId),
   });
 }
 
 async function fetchDictionaryEntries(
   query?: string,
+  categoryId?: number,
 ): Promise<DictionaryEntry[]> {
-  const apiUrl = query
-    ? `/api/dictionary?q=${encodeURIComponent(query)}`
+  const params = new URLSearchParams();
+  if (query) params.set("q", query);
+  if (categoryId) params.set("category", categoryId.toString());
+
+  const apiUrl = params.toString()
+    ? `/api/dictionary?${params.toString()}`
     : "/api/dictionary";
 
   const response = await fetch(apiUrl);

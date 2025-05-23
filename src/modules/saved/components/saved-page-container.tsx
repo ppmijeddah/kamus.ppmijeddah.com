@@ -7,10 +7,14 @@ import { DictionaryList } from "@/modules/dictionary/components/dictionary-list"
 import { useSavedStore } from "@/modules/saved/store/saved-store";
 import debounce from "lodash.debounce";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
+import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 
 function SavedPageContainer() {
   const saved = useSavedStore((state) => state.saved);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    number | undefined
+  >(undefined);
 
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,8 +24,20 @@ function SavedPageContainer() {
     [],
   );
 
+  const handleCategoryChange = useCallback((categoryId: number) => {
+    setSelectedCategoryId(categoryId || undefined);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const filteredSaved = saved
     .filter((entry) => {
+      if (
+        selectedCategoryId &&
+        parseInt(entry.category_id || "0", 10) !== selectedCategoryId
+      ) {
+        return false;
+      }
+
       if (!searchTerm) return true;
 
       const term = searchTerm.toLowerCase();
@@ -54,17 +70,15 @@ function SavedPageContainer() {
             { id: 2, name: "Arah dan jalan" },
             { id: 3, name: "Belanja dan harga" },
           ]}
+          selectedCategoryId={selectedCategoryId}
+          onCategoryChange={handleCategoryChange}
         />
 
         <div className="space-y-4 px-4">
           <DictionaryList
             searchQuery={searchTerm}
             entries={filteredSaved}
-            emptyMessage={
-              searchTerm
-                ? "Tidak ada kata tersimpan yang cocok dengan pencarian Anda."
-                : "Belum ada kata tersimpan. Tambahkan dengan menekan ikon bookmark pada entri kamus."
-            }
+            emptyMessage={getEmptyMessage(searchTerm, selectedCategoryId)}
           />
         </div>
       </div>
