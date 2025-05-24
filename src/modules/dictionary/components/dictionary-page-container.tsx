@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDictionaryEntries } from "@/modules/dictionary/api-adapter/use-dictionary";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
+import { FadeTransition } from "@/services/animation";
 
 interface DictionaryPageContainerProps {
   categories: Array<{ id: number; name: string }>;
@@ -61,7 +62,7 @@ function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
   );
 
   return (
-    <>
+    <FadeTransition>
       <SearchFilter
         onChange={handleSearch}
         defaultValue={query}
@@ -89,7 +90,7 @@ function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
           />
         )}
       </div>
-    </>
+    </FadeTransition>
   );
 }
 

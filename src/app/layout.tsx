@@ -4,7 +4,6 @@ import "@/styles/global.css";
 import QueryProvider from "@/lib/react-query";
 import { Suspense } from "react";
 import { Header } from "@/components/header";
-import { PageTransitionWrapper } from "@/services/animation";
 import { Navigation } from "@/components/navigation";
 
 const inter = Inter({
@@ -36,7 +35,7 @@ export default function RootLayout({
             <div className="pt-16 pb-24">
               <div className="relative max-w-4xl mx-auto">
                 <Header />
-                <PageTransitionWrapper>{children}</PageTransitionWrapper>{" "}
+                {children}
               </div>
 
               <footer className="fixed left-0 bottom-0 right-0">
