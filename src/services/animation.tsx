@@ -1,24 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import React from "react";
-import { usePathname } from "next/navigation";
-
-interface PageTransitionWrapperProps {
-  children: React.ReactNode;
-}
-
-export function PageTransitionWrapper({
-  children,
-}: PageTransitionWrapperProps) {
-  const pathname = usePathname();
-
-  return (
-    <AnimatePresence mode="wait">
-      <FadeTransition key={pathname}>{children}</FadeTransition>
-    </AnimatePresence>
-  );
-}
 
 export function FadeTransition({
   children,

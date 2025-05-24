@@ -1,10 +1,11 @@
 import React from "react";
 import { ProgressDisplay } from "./progress-display";
 import { InterestForm } from "./intereset-form"; // Assuming the typo 'intereset-form' is intentional as per context
+import { FadeTransition } from "@/services/animation";
 
 function TranslatePageContainer() {
   return (
-    <>
+    <FadeTransition>
       <div className="text-center p-8">
         <h1 className="text-2xl font-bold text-gray-700 dark:text-white mb-4">
           Penerjemah AI Indo ⇔ Arab Saudi Amiyah - Segera Hadir!
@@ -16,7 +17,7 @@ function TranslatePageContainer() {
         <ProgressDisplay />
         <InterestForm />
       </div>
-    </>
+    </FadeTransition>
   );
 }
 

@@ -6,6 +6,7 @@ import { useSavedStore } from "@/modules/saved/store/saved-store";
 import debounce from "lodash.debounce";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
+import { FadeTransition } from "@/services/animation";
 
 interface SavedPageContainerProps {
   categories: Array<{ id: number; name: string }>;
@@ -60,7 +61,7 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
     });
 
   return (
-    <>
+    <FadeTransition>
       <SearchFilter
         onChange={handleSearch}
         defaultValue={searchTerm}
@@ -76,7 +77,7 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
           emptyMessage={getEmptyMessage(searchTerm, selectedCategoryId)}
         />
       </div>
-    </>
+    </FadeTransition>
   );
 }
 

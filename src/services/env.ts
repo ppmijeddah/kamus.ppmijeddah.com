@@ -6,6 +6,9 @@ export const env = {
 
 function getBaseUrl() {
   if (isLocal()) {
+    if (typeof window !== "undefined" && window.location) {
+      return window.location.origin;
+    }
     return "http://localhost:3000";
   }
 
