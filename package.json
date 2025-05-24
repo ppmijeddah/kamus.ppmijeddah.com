@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "npm run init && next build && npm run init:db",
+    "build:deploy": "NEXT_PUBLIC_IS_DEPLOYED=true npm run build",
     "dev": "npm run init && npm run init:db && next dev --turbopack",
     "init": "node ./scripts/validate-dictionary.js && node ./scripts/init-environment.js",
     "init:db": "node ./scripts/init-database.js",
