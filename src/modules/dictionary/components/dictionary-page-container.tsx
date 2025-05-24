@@ -2,7 +2,6 @@
 
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
-import { Navigation } from "@/components/navigation";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDictionaryEntries } from "@/modules/dictionary/api-adapter/use-dictionary";
@@ -90,10 +89,6 @@ function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
           />
         )}
       </div>
-
-      <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation active="dictionary" />
-      </footer>
     </>
   );
 }

@@ -1,5 +1,3 @@
-import { Header } from "@/components/header";
-import { Navigation } from "@/components/navigation";
 import React from "react";
 import { ProgressDisplay } from "./progress-display";
 import { InterestForm } from "./intereset-form"; // Assuming the typo 'intereset-form' is intentional as per context
@@ -18,9 +16,6 @@ function TranslatePageContainer() {
         <ProgressDisplay />
         <InterestForm />
       </div>
-      <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation active="translate" />
-      </footer>
     </>
   );
 }

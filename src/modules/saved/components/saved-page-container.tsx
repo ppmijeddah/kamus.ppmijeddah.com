@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Navigation } from "@/components/navigation";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useSavedStore } from "@/modules/saved/store/saved-store";
 import debounce from "lodash.debounce";
@@ -77,10 +76,6 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
           emptyMessage={getEmptyMessage(searchTerm, selectedCategoryId)}
         />
       </div>
-
-      <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation active="saved" />
-      </footer>
     </>
   );
 }
