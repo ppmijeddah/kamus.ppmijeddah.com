@@ -1,6 +1,7 @@
 import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryCardBookmark } from "../../saved/components/dictionary-card-bookmark";
 import { HighlightText } from "./highlight-text";
+import { toSentenceCase } from "@/services/text";
 
 interface DictionaryCardProps {
   entry?: DictionaryEntry;
@@ -58,12 +59,15 @@ export function DictionaryCard({
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
               {entry && (
-                <HighlightText text={entry.indonesia} query={searchQuery} />
+                <HighlightText
+                  text={toSentenceCase(entry.indonesia)}
+                  query={searchQuery}
+                />
               )}
             </h2>
-            {entry && entry.category_name && (
+            {entry?.category_name && (
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-full ml-3 whitespace-nowrap">
-                <HighlightText text={entry.category_name} query={searchQuery} />
+                {toSentenceCase(entry.category_name)}
               </span>
             )}
           </div>
@@ -71,12 +75,18 @@ export function DictionaryCard({
           <div className="text-right flex items-center justify-between">
             <p className="text-lg text-gray-800 dark:text-white">
               {entry && (
-                <HighlightText text={entry.amiyah} query={searchQuery} />
+                <HighlightText
+                  text={toSentenceCase(entry.amiyah)}
+                  query={searchQuery}
+                />
               )}
             </p>
             <p className="text-xl text-gray-600 dark:text-gray-300 font-arabic mt-1">
               {entry && (
-                <HighlightText text={entry.amiyah_arab} query={searchQuery} />
+                <HighlightText
+                  text={toSentenceCase(entry.amiyah_arab)}
+                  query={searchQuery}
+                />
               )}
             </p>
           </div>
@@ -89,12 +99,18 @@ export function DictionaryCard({
           <div className="flex items-center justify-between">
             <p className="text-lg text-gray-800 dark:text-white">
               {entry && (
-                <HighlightText text={entry.fushah} query={searchQuery} />
+                <HighlightText
+                  text={toSentenceCase(entry.fushah)}
+                  query={searchQuery}
+                />
               )}
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-300 font-arabic">
               {entry && (
-                <HighlightText text={entry.fushah_arab} query={searchQuery} />
+                <HighlightText
+                  text={toSentenceCase(entry.fushah_arab)}
+                  query={searchQuery}
+                />
               )}
             </p>
           </div>
@@ -107,7 +123,10 @@ export function DictionaryCard({
             </h3>
             <p className="text-gray-700 dark:text-gray-300">
               {entry && (
-                <HighlightText text={entry.example} query={searchQuery} />
+                <HighlightText
+                  text={toSentenceCase(entry.example)}
+                  query={searchQuery}
+                />
               )}
             </p>
           </div>

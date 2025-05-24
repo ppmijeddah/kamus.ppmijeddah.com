@@ -21,7 +21,7 @@ export function HighlightText({ text, query }: HighlightTextProps) {
             {part}
           </span>
         ) : (
-          <span className="whitespace-pre" key={index}>{`${part}`}</span>
+          <span key={index}>{part}</span>
         );
       })}
     </>

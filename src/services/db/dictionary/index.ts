@@ -42,10 +42,9 @@ export async function searchEntries(
       OR d.amiyah_arab LIKE ? COLLATE NOCASE
       OR d.fushah_arab LIKE ? COLLATE NOCASE
       OR d.example LIKE ? COLLATE NOCASE
-      OR c.name LIKE ? COLLATE NOCASE
     )`;
 
-  const params = Array(7).fill(`%${query}%`);
+  const params = Array(6).fill(`%${query}%`);
 
   if (categoryId) {
     sql += ` AND d.category_id = ?`;

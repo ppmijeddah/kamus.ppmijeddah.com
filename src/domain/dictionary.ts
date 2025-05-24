@@ -9,3 +9,9 @@ export type DictionaryEntry = {
   category_name?: string;
   example: string;
 };
+
+export interface Category {
+  id: number;
+  name: string;
+  rank: number;
+}

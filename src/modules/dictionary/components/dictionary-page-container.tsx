@@ -6,11 +6,15 @@ import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useDictionaryEntries } from "@/modules/dictionary/api/use-dictionary";
+import { useDictionaryEntries } from "@/modules/dictionary/api-adapter/use-dictionary";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 
-function DictionaryPageContainer() {
+interface DictionaryPageContainerProps {
+  categories: Array<{ id: number; name: string }>;
+}
+
+function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -66,11 +70,7 @@ function DictionaryPageContainer() {
         <SearchFilter
           onChange={handleSearch}
           defaultValue={query}
-          categories={[
-            { id: 1, name: "Wajib tahu" },
-            { id: 2, name: "Arah dan jalan" },
-            { id: 3, name: "Belanja dan harga" },
-          ]}
+          categories={categories}
           selectedCategoryId={categoryId}
           onCategoryChange={handleCategoryChange}
         />

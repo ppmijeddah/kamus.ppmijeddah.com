@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run init && next build && npm run init:db",
     "dev": "npm run init && npm run init:db && next dev --turbopack",
-    "init": "node ./scripts/validate-dictionary.js",
+    "init": "node ./scripts/validate-dictionary.js && node ./scripts/init-environment.js",
     "init:db": "node ./scripts/init-database.js",
     "lint": "next lint",
     "start": "next start",

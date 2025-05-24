@@ -9,7 +9,11 @@ import debounce from "lodash.debounce";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 
-function SavedPageContainer() {
+interface SavedPageContainerProps {
+  categories: Array<{ id: number; name: string }>;
+}
+
+function SavedPageContainer({ categories }: SavedPageContainerProps) {
   const saved = useSavedStore((state) => state.saved);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<
@@ -65,11 +69,7 @@ function SavedPageContainer() {
         <SearchFilter
           onChange={handleSearch}
           defaultValue={searchTerm}
-          categories={[
-            { id: 1, name: "Wajib tahu" },
-            { id: 2, name: "Arah dan jalan" },
-            { id: 3, name: "Belanja dan harga" },
-          ]}
+          categories={categories}
           selectedCategoryId={selectedCategoryId}
           onCategoryChange={handleCategoryChange}
         />
