@@ -5,7 +5,7 @@ import { SavedBadge } from "../modules/saved/components/saved-badge";
 import { ReactNode } from "react";
 
 type NavigationProps = {
-  active: "dictionary" | "conversation" | "saved";
+  active: "dictionary" | "translate" | "saved";
 };
 
 export function Navigation(props: NavigationProps) {
@@ -30,10 +30,10 @@ export function Navigation(props: NavigationProps) {
           </NavigationItem>
 
           <NavigationItem
-            href="/percakapan"
-            label="Percakapan"
+            href="/terjemah"
+            label="Terjemah"
             icon={<MessageCircleMore className="w-6 h-6" />}
-            isActive={props.active === "conversation"}
+            isActive={props.active === "translate"}
           />
         </div>
       </div>

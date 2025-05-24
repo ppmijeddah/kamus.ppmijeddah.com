@@ -1,7 +1,7 @@
 import { Header } from "@/components/header";
 import { Navigation } from "@/components/navigation";
 
-function ConversationPageContainer() {
+function TranslatePageContainer() {
   return (
     <div className="pt-16 pb-24">
       <div className="max-w-4xl mx-auto">
@@ -12,15 +12,16 @@ function ConversationPageContainer() {
             Coming Soon!
           </h2>
           <p className="text-gray-600 dark:text-gray-300">
-            Fitur ini sedang dalam pengembangan. Silakan kembali lagi nanti.
+            Fitur penerjemah AI sedang dalam pengembangan. Silakan kembali lagi
+            nanti.
           </p>
         </div>
       </div>
       <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation active="conversation" />
+        <Navigation active="translate" />
       </footer>
     </div>
   );
 }
 
-export default ConversationPageContainer;
+export default TranslatePageContainer;
