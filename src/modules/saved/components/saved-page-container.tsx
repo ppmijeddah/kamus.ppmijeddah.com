@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Navigation } from "@/components/navigation";
-import { Header } from "@/components/header";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useSavedStore } from "@/modules/saved/store/saved-store";
 import debounce from "lodash.debounce";
@@ -62,31 +60,23 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
     });
 
   return (
-    <div className="pt-16 pb-24">
-      <div className="relative max-w-4xl mx-auto">
-        <Header />
+    <>
+      <SearchFilter
+        onChange={handleSearch}
+        defaultValue={searchTerm}
+        categories={categories}
+        selectedCategoryId={selectedCategoryId}
+        onCategoryChange={handleCategoryChange}
+      />
 
-        <SearchFilter
-          onChange={handleSearch}
-          defaultValue={searchTerm}
-          categories={categories}
-          selectedCategoryId={selectedCategoryId}
-          onCategoryChange={handleCategoryChange}
+      <div className="space-y-4 px-4">
+        <DictionaryList
+          searchQuery={searchTerm}
+          entries={filteredSaved}
+          emptyMessage={getEmptyMessage(searchTerm, selectedCategoryId)}
         />
-
-        <div className="space-y-4 px-4">
-          <DictionaryList
-            searchQuery={searchTerm}
-            entries={filteredSaved}
-            emptyMessage={getEmptyMessage(searchTerm, selectedCategoryId)}
-          />
-        </div>
       </div>
-
-      <footer className="fixed left-0 bottom-0 right-0">
-        <Navigation active="saved" />
-      </footer>
-    </div>
+    </>
   );
 }
 

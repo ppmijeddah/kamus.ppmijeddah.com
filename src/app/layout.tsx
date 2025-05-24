@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "@/styles/global.css";
 import QueryProvider from "@/lib/react-query";
 import { Suspense } from "react";
+import { Header } from "@/components/header";
+import { PageTransitionWrapper } from "@/services/animation";
+import { Navigation } from "@/components/navigation";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,7 +32,18 @@ export default function RootLayout({
         className={`${inter.variable} antialiased min-h-svh bg-white dark:bg-pacamara-dark font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0`}
       >
         <Suspense>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <div className="pt-16 pb-24">
+              <div className="relative max-w-4xl mx-auto">
+                <Header />
+                <PageTransitionWrapper>{children}</PageTransitionWrapper>{" "}
+              </div>
+
+              <footer className="fixed left-0 bottom-0 right-0">
+                <Navigation />
+              </footer>
+            </div>
+          </QueryProvider>
         </Suspense>
       </body>
     </html>
