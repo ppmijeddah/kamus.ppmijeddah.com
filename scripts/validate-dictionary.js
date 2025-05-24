@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require("fs").promises;
 const path = require("path");
+const { validate: uuidValidate } = require("uuid");
 
 async function main() {
-  const input = path.join(process.cwd(), "./data/dictionary.csv");
+  const input = path.join(process.cwd(), "./data/dictionary-with-uuid.csv");
 
   console.log(`Validating dictionary CSV in ${input}`);
 
@@ -18,10 +19,14 @@ async function main() {
   let validEntries = 0;
   let invalidEntries = 0;
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     if (!line.trim()) continue;
 
+    const lineNumber = i + 2;
+
     const [
+      uuid,
       indonesia,
       amiyah,
       amiyah_arab,
@@ -32,11 +37,20 @@ async function main() {
       contoh,
     ] = line.split(",");
 
-    if (amiyah && amiyah_arab && indonesia && fushah && fushah_arab && contoh) {
+    const isUuidValid = uuid && uuidValidate(uuid.trim());
+    const areOtherFieldsValid =
+      amiyah && amiyah_arab && indonesia && fushah && fushah_arab && contoh;
+
+    if (isUuidValid && areOtherFieldsValid) {
       validEntries++;
     } else {
       invalidEntries++;
-      console.error(`Invalid entry: ${line}`);
+      if (!isUuidValid) {
+        console.error(`Invalid or missing UUID on line ${lineNumber}: ${line}`);
+      }
+      if (!areOtherFieldsValid) {
+        console.error(`Missing data fields on line ${lineNumber}: ${line}`);
+      }
     }
   }
 
