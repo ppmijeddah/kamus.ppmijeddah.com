@@ -35,6 +35,7 @@ async function initDb() {
 
     CREATE TABLE IF NOT EXISTS dictionary_entries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT NOT NULL UNIQUE,
       indonesia TEXT NOT NULL,
       amiyah TEXT NOT NULL,
       amiyah_arab TEXT NOT NULL,
@@ -46,6 +47,7 @@ async function initDb() {
       FOREIGN KEY (category_id) REFERENCES categories(id)
     );
 
+    CREATE INDEX IF NOT EXISTS idx_uuid ON dictionary_entries(uuid);
     CREATE INDEX IF NOT EXISTS idx_indonesia ON dictionary_entries(indonesia COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_amiyah ON dictionary_entries(amiyah COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_fushah ON dictionary_entries(fushah COLLATE NOCASE);
@@ -69,7 +71,7 @@ async function initDb() {
 
   if (entryCount.count === 0) {
     console.log(
-      "No dictionary entries found in file database, loading data...",
+      "No dictionary entries found in database, loading data from CSV...",
     );
     await loadDictionaryData(db);
   } else {
@@ -86,7 +88,7 @@ async function loadCategoriesData(db) {
     const csvPath = path.join(process.cwd(), "data", "category.csv");
     const csvData = await fs.readFile(csvPath, "utf8");
 
-    const lines = csvData.split("\n");
+    const lines = csvData.split(/\r?\n/);
     // Skip header
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const header = lines[0];
@@ -123,7 +125,7 @@ async function loadCategoriesData(db) {
     } catch (e) {
       console.error("Error rolling back transaction:", e);
     }
-    throw new Error(`Failed to load categories data: ${error}`);
+    throw new Error(`Failed to load categories data: ${error.message}`);
   }
 }
 
@@ -137,11 +139,14 @@ async function loadDictionaryData(db) {
       categoryMap.set(category.name.toLowerCase().trim(), category.id);
     });
 
-    const csvPath = path.join(process.cwd(), "data", "dictionary.csv");
+    const csvPath = path.join(
+      process.cwd(),
+      "data",
+      "dictionary-with-uuid.csv",
+    );
     const csvData = await fs.readFile(csvPath, "utf8");
 
-    const lines = csvData.split("\n");
-    // Skip header
+    const lines = csvData.split(/\r?\n/);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const header = lines[0];
 
@@ -149,6 +154,7 @@ async function loadDictionaryData(db) {
 
     const insert = await db.prepare(`
       INSERT INTO dictionary_entries (
+        uuid,
         indonesia,
         amiyah,
         amiyah_arab,
@@ -157,18 +163,20 @@ async function loadDictionaryData(db) {
         category_id,
         example
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     let importedCount = 0;
     let entriesWithoutCategory = 0;
     let unknownCategories = new Set();
+    let invalidUuidCount = 0;
 
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       const [
+        uuid,
         indonesia,
         amiyah,
         amiyah_arab,
@@ -177,6 +185,20 @@ async function loadDictionaryData(db) {
         categoryName,
         example,
       ] = line.split(",");
+
+      if (!uuid || !uuid.trim()) {
+        console.warn(`Skipping line due to missing UUID: ${line}`);
+        invalidUuidCount++;
+        continue;
+      }
+
+      if (uuid.trim().length !== 36) {
+        console.warn(
+          `Skipping line due to potentially invalid UUID format: ${uuid.trim()} in line: ${line}`,
+        );
+        invalidUuidCount++;
+        continue;
+      }
 
       if (indonesia) {
         let categoryId = null;
@@ -193,6 +215,7 @@ async function loadDictionaryData(db) {
         }
 
         await insert.run(
+          uuid.trim(),
           indonesia.toLowerCase().trim(),
           amiyah?.trim() || "",
           amiyah_arab?.trim() || "",
@@ -209,6 +232,11 @@ async function loadDictionaryData(db) {
     await insert.finalize();
 
     console.log(`Loaded ${importedCount} dictionary entries into database`);
+    if (invalidUuidCount > 0) {
+      console.warn(
+        `${invalidUuidCount} lines were skipped due to missing or invalid UUIDs.`,
+      );
+    }
     if (entriesWithoutCategory > 0) {
       console.log(
         `${entriesWithoutCategory} entries had empty category fields`,
@@ -225,8 +253,7 @@ async function loadDictionaryData(db) {
     } catch (e) {
       console.error("Error rolling back transaction:", e);
     }
-
-    throw new Error(`Failed to load dictionary data: ${error}`);
+    throw new Error(`Failed to load dictionary data: ${error.message}`);
   }
 }
 

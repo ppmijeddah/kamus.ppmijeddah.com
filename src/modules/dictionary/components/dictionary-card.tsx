@@ -2,6 +2,8 @@ import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryCardBookmark } from "../../saved/components/dictionary-card-bookmark";
 import { HighlightText } from "./highlight-text";
 import { toSentenceCase } from "@/services/text";
+import { reportEntryViaWhatsapp } from "../services/report-entry-issue";
+import { Flag } from "lucide-react";
 
 interface DictionaryCardProps {
   entry?: DictionaryEntry;
@@ -45,12 +47,27 @@ export function DictionaryCard({
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-40 mb-2"></div>
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full max-w-md mb-2"></div>
             </div>
-            <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full ml-4 flex-shrink-0"></div>
+            <div className="flex items-center">
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full ml-2 flex-shrink-0"></div>
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full ml-2 flex-shrink-0"></div>
+            </div>
           </div>
         </div>
       </div>
     );
   }
+
+  const handleReportIssue = () => {
+    if (!entry) {
+      return;
+    }
+    const { indonesia, amiyah_arab, uuid } = entry;
+    if (indonesia && amiyah_arab && uuid) {
+      reportEntryViaWhatsapp({ indonesia, amiyah_arab, uuid });
+    } else {
+      console.error("Missing data for reporting issue:", entry);
+    }
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
@@ -116,7 +133,7 @@ export function DictionaryCard({
           </div>
         </div>
 
-        <div className="border-t border-gray-100 dark:border-gray-700 pt-4 flex justify-between">
+        <div className="border-t border-gray-100 dark:border-gray-700 pt-4 flex justify-between items-end">
           <div>
             <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">
               Contoh Penggunaan:
@@ -131,7 +148,21 @@ export function DictionaryCard({
             </p>
           </div>
 
-          {entry && <DictionaryCardBookmark entry={entry} />}
+          <div className="flex items-center">
+            {entry && (
+              <button
+                onClick={handleReportIssue}
+                className="h-fit ml-2 focus:ring-2 focus:ring-pacamara-secondary focus:ring-offset-2 focus:outline-none rounded-full p-1 transition-all"
+                aria-label="Report issue with this entry"
+                title="Laporkan Kesalahan"
+              >
+                <Flag
+                  className={`w-6 h-6 text-gray-400 hover:text-pacamara-secondary transition-colors`}
+                />
+              </button>
+            )}
+            {entry && <DictionaryCardBookmark entry={entry} />}
+          </div>
         </div>
       </div>
     </div>

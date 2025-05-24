@@ -1,5 +1,6 @@
 export type DictionaryEntry = {
   id: number;
+  uuid: string;
   amiyah: string;
   amiyah_arab: string;
   indonesia: string;

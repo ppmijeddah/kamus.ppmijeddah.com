@@ -2,18 +2,18 @@ import { DictionaryEntry } from "@/domain/dictionary";
 import { apiClient } from "@/services/api/client";
 
 export async function fetchDictionaryEntries(
-  query?: string,
-  categoryId?: number,
+  args: { query?: string; categoryId?: string | number },
+  cache?: RequestCache,
 ): Promise<DictionaryEntry[]> {
   const params = new URLSearchParams();
-  if (query) params.set("q", query);
-  if (categoryId) params.set("category", categoryId.toString());
+  if (args.query) params.set("q", args.query);
+  if (args.categoryId) params.set("category", args.categoryId.toString());
 
   const apiUrl = params.toString()
     ? `/api/dictionary?${params.toString()}`
     : "/api/dictionary";
 
-  const res = await apiClient.get<DictionaryEntry[]>(apiUrl);
+  const res = await apiClient.get<DictionaryEntry[]>(apiUrl, cache);
 
   return res;
 }

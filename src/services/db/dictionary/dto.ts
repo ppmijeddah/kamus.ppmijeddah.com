@@ -1,5 +1,6 @@
 export type DTO_DictionaryEntry = {
   id: number;
+  uuid: string;
   amiyah_arab: string;
   amiyah: string;
   indonesia: string;

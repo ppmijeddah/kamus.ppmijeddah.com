@@ -8,12 +8,17 @@ import { useDictionaryEntries } from "@/modules/dictionary/api-adapter/use-dicti
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 import { FadeTransition } from "@/services/animation";
+import { DictionaryEntry } from "@/domain/dictionary";
 
 interface DictionaryPageContainerProps {
   categories: Array<{ id: number; name: string }>;
+  initialEntries: DictionaryEntry[];
 }
 
-function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
+function DictionaryPageContainer({
+  categories,
+  initialEntries,
+}: DictionaryPageContainerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -21,12 +26,19 @@ function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
     ? parseInt(searchParams.get("category") || "0", 10)
     : undefined;
 
+  const shouldUseInitialData = !query && categoryId === undefined;
+
   const {
     data: entries = [],
     isLoading,
     isError,
     error,
-  } = useDictionaryEntries(query, categoryId);
+  } = useDictionaryEntries(
+    { query, categoryId },
+    {
+      initialData: shouldUseInitialData ? initialEntries : undefined,
+    },
+  );
 
   const handleSearch = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +66,6 @@ function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
       } else {
         params.delete("category");
       }
-
       router.replace(`?${params.toString()}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
