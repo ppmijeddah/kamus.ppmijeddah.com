@@ -7,9 +7,10 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  async get<T>(path: string): Promise<T> {
+  async get<T>(path: string, cache?: RequestCache): Promise<T> {
     const response = await fetch(`${this.baseUrl}${path}`, {
       method: "GET",
+      cache: cache,
     });
 
     if (!response.ok) {
