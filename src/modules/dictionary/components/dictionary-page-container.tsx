@@ -3,7 +3,6 @@
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import { Navigation } from "@/components/navigation";
-import { Header } from "@/components/header";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDictionaryEntries } from "@/modules/dictionary/api-adapter/use-dictionary";
@@ -63,43 +62,39 @@ function DictionaryPageContainer({ categories }: DictionaryPageContainerProps) {
   );
 
   return (
-    <div className="pt-16 pb-24">
-      <div className="relative max-w-4xl mx-auto">
-        <Header />
+    <>
+      <SearchFilter
+        onChange={handleSearch}
+        defaultValue={query}
+        categories={categories}
+        selectedCategoryId={categoryId}
+        onCategoryChange={handleCategoryChange}
+      />
 
-        <SearchFilter
-          onChange={handleSearch}
-          defaultValue={query}
-          categories={categories}
-          selectedCategoryId={categoryId}
-          onCategoryChange={handleCategoryChange}
-        />
-
-        <div className="space-y-4 px-4">
-          {isError ? (
-            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-              <p className="text-red-600 dark:text-red-400 text-lg">
-                Error:{" "}
-                {error instanceof Error
-                  ? error.message
-                  : "Gagal mendapatkan data kamus"}
-              </p>
-            </div>
-          ) : (
-            <DictionaryList
-              entries={entries}
-              isLoading={isLoading}
-              searchQuery={query}
-              emptyMessage={getEmptyMessage(query, categoryId)}
-            />
-          )}
-        </div>
+      <div className="space-y-4 px-4">
+        {isError ? (
+          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <p className="text-red-600 dark:text-red-400 text-lg">
+              Error:{" "}
+              {error instanceof Error
+                ? error.message
+                : "Gagal mendapatkan data kamus"}
+            </p>
+          </div>
+        ) : (
+          <DictionaryList
+            entries={entries}
+            isLoading={isLoading}
+            searchQuery={query}
+            emptyMessage={getEmptyMessage(query, categoryId)}
+          />
+        )}
       </div>
 
       <footer className="fixed left-0 bottom-0 right-0">
         <Navigation active="dictionary" />
       </footer>
-    </div>
+    </>
   );
 }
 

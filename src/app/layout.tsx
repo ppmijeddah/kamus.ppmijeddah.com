@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/global.css";
 import QueryProvider from "@/lib/react-query";
 import { Suspense } from "react";
+import { Header } from "@/components/header";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,7 +30,15 @@ export default function RootLayout({
         className={`${inter.variable} antialiased min-h-svh bg-white dark:bg-pacamara-dark font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0`}
       >
         <Suspense>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <div className="pt-16 pb-24">
+              <div className="relative max-w-4xl mx-auto">
+                <Header />
+
+                {children}
+              </div>
+            </div>
+          </QueryProvider>
         </Suspense>
       </body>
     </html>
