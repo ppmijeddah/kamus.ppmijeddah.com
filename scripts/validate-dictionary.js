@@ -21,10 +21,18 @@ async function main() {
   for (const line of lines) {
     if (!line.trim()) continue;
 
-    const [word, amiyah_arab, indonesia, fushah, fushah_arab, contoh] =
-      line.split(",");
+    const [
+      indonesia,
+      amiyah,
+      amiyah_arab,
+      fushah,
+      fushah_arab,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      category,
+      contoh,
+    ] = line.split(",");
 
-    if (word && amiyah_arab && indonesia && fushah && fushah_arab && contoh) {
+    if (amiyah && amiyah_arab && indonesia && fushah && fushah_arab && contoh) {
       validEntries++;
     } else {
       invalidEntries++;

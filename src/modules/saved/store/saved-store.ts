@@ -14,7 +14,7 @@ export const useSavedStore = create<SavedState>()(
       saved: [],
 
       isSaved: (entry: DictionaryEntry) => {
-        return get().saved.some((item) => item.word === entry.word);
+        return get().saved.some((item) => item.id === entry.id);
       },
 
       toggleSaved: (entry: DictionaryEntry) => {
@@ -22,7 +22,7 @@ export const useSavedStore = create<SavedState>()(
 
         if (isSaved(entry)) {
           set({
-            saved: saved.filter((item) => item.word !== entry.word),
+            saved: saved.filter((item) => item.id !== entry.id),
           });
         } else {
           set({
