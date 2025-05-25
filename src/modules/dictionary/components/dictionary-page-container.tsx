@@ -74,6 +74,14 @@ function DictionaryPageContainer({
     [router, searchParams],
   );
 
+  const handleReset = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("q");
+    params.delete("category");
+    router.replace(`?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [router, searchParams]);
+
   return (
     <FadeTransition>
       <SearchFilter
@@ -82,6 +90,7 @@ function DictionaryPageContainer({
         categories={categories}
         selectedCategoryId={categoryId}
         onCategoryChange={handleCategoryChange}
+        onReset={handleReset}
       />
 
       {entries.length > 0 && <DictionaryEntryCount count={entries.length} />}

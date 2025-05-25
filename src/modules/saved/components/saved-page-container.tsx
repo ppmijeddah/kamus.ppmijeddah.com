@@ -33,6 +33,12 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  const handleReset = useCallback(() => {
+    setSearchTerm("");
+    setSelectedCategoryId(undefined);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const filteredSaved = saved
     .filter((entry) => {
       if (
@@ -69,9 +75,12 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
         categories={categories}
         selectedCategoryId={selectedCategoryId}
         onCategoryChange={handleCategoryChange}
+        onReset={handleReset}
       />
 
-      {saved.length > 0 && <DictionaryEntryCount count={saved.length} />}
+      {filteredSaved.length > 0 && (
+        <DictionaryEntryCount count={filteredSaved.length} />
+      )}
 
       <div className="space-y-4 px-4">
         <DictionaryList
