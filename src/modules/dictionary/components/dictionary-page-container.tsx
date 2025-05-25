@@ -9,6 +9,7 @@ import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 import { FadeTransition } from "@/services/animation";
 import { DictionaryEntry } from "@/domain/dictionary";
+import { DictionaryEntryCount } from "./dictionary-entry-count";
 
 interface DictionaryPageContainerProps {
   categories: Array<{ id: number; name: string }>;
@@ -82,6 +83,8 @@ function DictionaryPageContainer({
         selectedCategoryId={categoryId}
         onCategoryChange={handleCategoryChange}
       />
+
+      {entries.length > 0 && <DictionaryEntryCount count={entries.length} />}
 
       <div className="space-y-4 px-4">
         {isError ? (
