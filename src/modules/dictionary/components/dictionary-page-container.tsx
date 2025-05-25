@@ -37,6 +37,7 @@ function DictionaryPageContainer({
     { query, categoryId },
     {
       initialData: shouldUseInitialData ? initialEntries : undefined,
+      enabled: !shouldUseInitialData,
     },
   );
 
