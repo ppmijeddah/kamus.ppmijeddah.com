@@ -9,6 +9,7 @@ import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 import { FadeTransition } from "@/services/animation";
 import { DictionaryEntry } from "@/domain/dictionary";
+import { DictionaryEntryCount } from "./dictionary-entry-count";
 
 interface DictionaryPageContainerProps {
   categories: Array<{ id: number; name: string }>;
@@ -37,6 +38,7 @@ function DictionaryPageContainer({
     { query, categoryId },
     {
       initialData: shouldUseInitialData ? initialEntries : undefined,
+      enabled: !shouldUseInitialData,
     },
   );
 
@@ -72,6 +74,14 @@ function DictionaryPageContainer({
     [router, searchParams],
   );
 
+  const handleReset = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("q");
+    params.delete("category");
+    router.replace(`?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [router, searchParams]);
+
   return (
     <FadeTransition>
       <SearchFilter
@@ -80,7 +90,10 @@ function DictionaryPageContainer({
         categories={categories}
         selectedCategoryId={categoryId}
         onCategoryChange={handleCategoryChange}
+        onReset={handleReset}
       />
+
+      {entries.length > 0 && <DictionaryEntryCount count={entries.length} />}
 
       <div className="space-y-4 px-4">
         {isError ? (

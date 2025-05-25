@@ -7,6 +7,7 @@ import debounce from "lodash.debounce";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 import { FadeTransition } from "@/services/animation";
+import { DictionaryEntryCount } from "@/modules/dictionary/components/dictionary-entry-count";
 
 interface SavedPageContainerProps {
   categories: Array<{ id: number; name: string }>;
@@ -29,6 +30,12 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
 
   const handleCategoryChange = useCallback((categoryId: number) => {
     setSelectedCategoryId(categoryId || undefined);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setSearchTerm("");
+    setSelectedCategoryId(undefined);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -68,7 +75,12 @@ function SavedPageContainer({ categories }: SavedPageContainerProps) {
         categories={categories}
         selectedCategoryId={selectedCategoryId}
         onCategoryChange={handleCategoryChange}
+        onReset={handleReset}
       />
+
+      {filteredSaved.length > 0 && (
+        <DictionaryEntryCount count={filteredSaved.length} />
+      )}
 
       <div className="space-y-4 px-4">
         <DictionaryList
