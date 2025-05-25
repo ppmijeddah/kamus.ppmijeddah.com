@@ -26,7 +26,6 @@ export function SearchFilter({
   selectedCategoryId,
   onCategoryChange,
   onReset,
-  resultsCount,
 }: SearchFilterProps) {
   return (
     <div className="z-10 bg-white dark:bg-gray-800 md:rounded-lg shadow-lg p-4 mb-6 sticky top-0 md:mx-4">
