@@ -4,42 +4,18 @@ import React from "react";
 import Link from "next/link";
 import { FadeTransition } from "@/services/animation";
 import { ChevronRight, MessageSquareText } from "lucide-react";
-// import { Scenario, Conversation } from "@/modules/formula/domain";
+import { Conversation, Scenario } from "@/domain/scenario";
 
-// interface ScenarioDetailPageContainerProps {
-//   scenario: Scenario; // Or scenarioId/uuid to fetch details
-//   conversations: Conversation[];
-// }
+interface ScenarioDetailPageContainerProps {
+  scenario: Scenario;
+  conversations: Conversation[];
+}
 
-export default function ScenarioDetailPageContainer(
-  {
-    /* scenario, conversations */
-  } /*: ScenarioDetailPageContainerProps*/,
-) {
-  const placeholderScenario = {
-    uuid: "memesan-taksi",
-    title: "Skenario: Memesan Taksi",
-    description:
-      "Pelajari cara memesan taksi, menyebutkan tujuan, dan berinteraksi dengan sopir.",
-  };
-
-  const placeholderConversations = [
-    {
-      uuid: "dialog-1-taksi-pemula",
-      title: "Dialog 1: Pemesanan Dasar Taksi",
-      description: "Percakapan singkat untuk memesan taksi ke tujuan umum.",
-      // scenario_id: "memesan-taksi"
-    },
-    {
-      uuid: "dialog-2-taksi-bandara",
-      title: "Dialog 2: Taksi ke Bandara dengan Detail",
-      description:
-        "Percakapan lebih lanjut, termasuk menanyakan perkiraan biaya dan waktu.",
-      // scenario_id: "memesan-taksi"
-    },
-  ];
-
-  const currentScenarioUuid = placeholderScenario.uuid;
+export default function ScenarioDetailPageContainer({
+  scenario,
+  conversations,
+}: ScenarioDetailPageContainerProps) {
+  const currentScenarioUuid = scenario.uuid;
 
   return (
     <FadeTransition>
@@ -54,10 +30,10 @@ export default function ScenarioDetailPageContainer(
           </Link>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
-              {placeholderScenario.title}
+              {scenario.title}
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
-              {placeholderScenario.description}
+              {scenario.description}
             </p>
           </div>
         </div>
@@ -67,7 +43,7 @@ export default function ScenarioDetailPageContainer(
           <h2 className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-white mb-4 md:mb-6">
             Pilih Percakapan:
           </h2>
-          {placeholderConversations.length === 0 ? (
+          {conversations.length === 0 ? (
             <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
               <p className="text-gray-600 dark:text-gray-300 text-lg">
                 Belum ada percakapan yang tersedia untuk skenario ini.
@@ -76,7 +52,7 @@ export default function ScenarioDetailPageContainer(
           ) : (
             <>
               <ul className="space-y-4 not-prose">
-                {placeholderConversations.map((conversation) => (
+                {conversations.map((conversation) => (
                   <li key={conversation.uuid}>
                     <Link
                       href={`/skenario/${currentScenarioUuid}/percakapan/${conversation.uuid}`}
