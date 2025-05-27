@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { FadeTransition } from "@/services/animation";
 import { ChevronRight } from "lucide-react";
-import { Scenario } from "@/domain/scenario";
+import { Scenario, sortScenariosByImportance } from "@/domain/scenario";
 
 interface ScenariosPageContainerProps {
   scenarios: Scenario[];
@@ -13,13 +13,15 @@ interface ScenariosPageContainerProps {
 export default function ScenariosPageContainer({
   scenarios,
 }: ScenariosPageContainerProps) {
+  const sortedScenarios = sortScenariosByImportance(scenarios);
+
   return (
     <FadeTransition>
       <div className="p-4 md:px-8 space-y-2 md:py-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-6 md:mb-8">
           Pilih Skenario Percakapan
         </h1>
-        {scenarios.length === 0 ? (
+        {sortedScenarios.length === 0 ? (
           <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
             <p className="text-gray-600 dark:text-gray-300 text-lg">
               Belum ada skenario yang tersedia saat ini.
@@ -27,7 +29,7 @@ export default function ScenariosPageContainer({
           </div>
         ) : (
           <ul className="space-y-4 not-prose">
-            {scenarios.map((scenario) => (
+            {sortedScenarios.map((scenario) => (
               <li key={scenario.uuid}>
                 <Link
                   href={`/skenario/${scenario.uuid}`}
@@ -49,7 +51,7 @@ export default function ScenariosPageContainer({
             ))}
           </ul>
         )}
-        {scenarios.length > 0 && (
+        {sortedScenarios.length > 0 && (
           <div className="mt-8 text-center py-8 text-gray-500 dark:text-gray-400">
             <p>Lebih banyak skenario akan ditambahkan segera!</p>
           </div>

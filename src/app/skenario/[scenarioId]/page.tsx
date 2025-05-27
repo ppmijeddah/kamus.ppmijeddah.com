@@ -7,6 +7,7 @@ export default function ScenarioDetailPage() {
     title: "Skenario: Memesan Taksi",
     description:
       "Pelajari cara memesan taksi, menyebutkan tujuan, dan berinteraksi dengan sopir.",
+    importance_rank: 1,
   };
 
   const placeholderConversations: Conversation[] = [
@@ -14,14 +15,14 @@ export default function ScenarioDetailPage() {
       uuid: "dialog-1-taksi-pemula",
       title: "Dialog 1: Pemesanan Dasar Taksi",
       description: "Percakapan singkat untuk memesan taksi ke tujuan umum.",
-      // scenario_id: "memesan-taksi"
+      scenario_uuid: "memesan-taksi",
     },
     {
       uuid: "dialog-2-taksi-bandara",
       title: "Dialog 2: Taksi ke Bandara dengan Detail",
       description:
         "Percakapan lebih lanjut, termasuk menanyakan perkiraan biaya dan waktu.",
-      // scenario_id: "memesan-taksi"
+      scenario_uuid: "memesan-taksi",
     },
   ];
 

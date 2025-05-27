@@ -5,15 +5,29 @@ export default function ScenariosPage() {
   const placeholderScenarios: Scenario[] = [
     {
       uuid: "memesan-taksi",
-      title: "Skenario 1: Memesan Taksi",
+      title: "Memesan Taksi",
       description:
         "Pelajari cara memesan taksi, menyebutkan tujuan, dan berinteraksi dengan sopir.",
+      importance_rank: 1,
     },
     {
       uuid: "memesan-makanan",
-      title: "Skenario 2: Memesan Makanan di Restoran",
+      title: "Memesan Makanan di Restoran",
       description:
         "Dari meminta meja hingga membayar tagihan, kuasai percakapan di restoran.",
+      importance_rank: 2,
+    },
+    {
+      uuid: "belanja-di-pasar",
+      title: "Belanja di Pasar",
+      description: "Pelajari tawar-menawar dan membeli barang di pasar.",
+      importance_rank: 3,
+    },
+    {
+      uuid: "menanyakan-arah",
+      title: "Menanyakan Arah",
+      description: "Cara bertanya dan memahami petunjuk arah.",
+      importance_rank: 4,
     },
   ];
 
