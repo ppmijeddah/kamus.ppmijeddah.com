@@ -1,5 +1,5 @@
 import { ThemeToggler } from "@/services/theme";
-import { Book } from "lucide-react";
+import { Book, MessageCircleMore } from "lucide-react";
 import Link from "next/link";
 
 export function Header() {
@@ -25,7 +25,15 @@ export function Header() {
         </div>
       </div>
 
-      <div className="relative md:right-3">
+      <div className="relative md:right-3 flex items-center space-x-2 md:space-x-3">
+        <Link
+          href="/terjemah"
+          className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          aria-label="Buka fitur terjemah"
+          title="Terjemah"
+        >
+          <MessageCircleMore className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+        </Link>
         <ThemeToggler />
       </div>
     </header>
