@@ -12,11 +12,11 @@ const DICTIONARY_ENTRIES_CSV_PATH = path.join(
   "data",
   "dictionary-with-uuid.csv",
 );
-const SCENARIO_CSV_PATH = path.join(process.cwd(), "data", "scenario.csv");
-const CONVERSATION_CSV_PATH = path.join(
+const SCENARIO_TSV_PATH = path.join(process.cwd(), "data", "scenario.tsv");
+const CONVERSATION_TSV_PATH = path.join(
   process.cwd(),
   "data",
-  "conversation.csv",
+  "conversation.tsv",
 );
 
 main();
@@ -297,10 +297,10 @@ async function loadDictionaryData(db) {
 
 async function loadScenariosData(db) {
   try {
-    const csvData = await fs.readFile(SCENARIO_CSV_PATH, "utf8");
-    const lines = csvData.split(/\r?\n/);
+    const tsvData = await fs.readFile(SCENARIO_TSV_PATH, "utf8");
+    const lines = tsvData.split(/\r?\n/);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const header = lines[0]; // "Nama,Deskripsi,Rank"
+    const header = lines[0]; // "Nama\tDeskripsi\tRank"
 
     await db.run("BEGIN TRANSACTION");
     const insert = await db.prepare(`
@@ -312,7 +312,7 @@ async function loadScenariosData(db) {
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
-      const [name, description, rank] = line.split(",");
+      const [name, description, rank] = line.split("\t"); // Updated delimiter
       if (name && description && rank) {
         await insert.run(
           uuidv4(),
@@ -353,8 +353,8 @@ async function loadConversationsAndSentencesData(db) {
       return;
     }
 
-    const csvData = await fs.readFile(CONVERSATION_CSV_PATH, "utf8");
-    const lines = csvData.split(/\r?\n/);
+    const tsvData = await fs.readFile(CONVERSATION_TSV_PATH, "utf8");
+    const lines = tsvData.split(/\r?\n/);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const header = lines[0];
 
@@ -371,7 +371,7 @@ async function loadConversationsAndSentencesData(db) {
         indonesia,
         amiyah,
         amiyahArab,
-      ] = line.split(",");
+      ] = line.split("\t");
 
       if (!convoTitle || !scenarioName) {
         console.warn(
