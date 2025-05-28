@@ -83,11 +83,11 @@ async function initDb() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       uuid TEXT NOT NULL UNIQUE,
       conversation_id INTEGER NOT NULL,
-      speaker TEXT,
-      amiyah_text_arab TEXT,
-      amiyah_text_transliteration TEXT,
-      translation_bahasa TEXT,
-      order_in_conversation INTEGER,
+      speaker TEXT NOT NULL,
+      amiyah_text_arab TEXT NOT NULL,
+      amiyah_text_transliteration TEXT NOT NULL,
+      translation_bahasa TEXT NOT NULL,
+      order_in_conversation INTEGER NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (conversation_id) REFERENCES conversations(id)
     );
