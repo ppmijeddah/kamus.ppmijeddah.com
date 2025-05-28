@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useSavedStore } from "@/modules/saved/store/saved-store";
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
@@ -8,6 +8,17 @@ import { getEmptyMessageForSavedPage } from "@/modules/search-filter/services/em
 import { FadeTransition } from "@/services/animation";
 import { SavedConversationCard } from "../../scenario/components/saved-conversation-card";
 import { SavedItemCount } from "./saved-item-count";
+import { DictionaryEntry } from "@/domain/dictionary";
+import { reportEntryViaWhatsapp } from "@/modules/dictionary/services/report-entry-issue";
+import { Loader2 } from "lucide-react";
+
+const ReportEntryModal = lazy(() =>
+  import("@/modules/dictionary/components/report-entry-modal").then(
+    (module) => ({
+      default: module.ReportEntryModal,
+    }),
+  ),
+);
 
 function SavedPageContainer() {
   const savedDictionaryEntries = useSavedStore(
@@ -16,6 +27,38 @@ function SavedPageContainer() {
   const savedConversations = useSavedStore((state) => state.savedConversations);
 
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedEntryForReport, setSelectedEntryForReport] =
+    useState<DictionaryEntry | null>(null);
+
+  const handleOpenReportModal = useCallback((entry: DictionaryEntry) => {
+    setSelectedEntryForReport(entry);
+    setIsReportModalOpen(true);
+  }, []);
+
+  const handleCloseReportModal = useCallback(() => {
+    setIsReportModalOpen(false);
+    setSelectedEntryForReport(null);
+  }, []);
+
+  const handleSubmitEntryReport = useCallback(
+    (problemDescription: string, suggestion?: string) => {
+      if (selectedEntryForReport) {
+        reportEntryViaWhatsapp(
+          {
+            indonesia: selectedEntryForReport.indonesia,
+            amiyah_arab: selectedEntryForReport.amiyah_arab,
+            uuid: selectedEntryForReport.uuid,
+          },
+          problemDescription,
+          suggestion,
+        );
+        handleCloseReportModal();
+      }
+    },
+    [selectedEntryForReport, handleCloseReportModal],
+  );
 
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -98,6 +141,7 @@ function SavedPageContainer() {
               searchQuery={searchTerm}
               entries={filteredDictionaryEntries}
               emptyMessage=""
+              onOpenReportModal={handleOpenReportModal}
             />
           </section>
         )}
@@ -128,6 +172,22 @@ function SavedPageContainer() {
           </div>
         )}
       </div>
+      {isReportModalOpen && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          }
+        >
+          <ReportEntryModal
+            isOpen={isReportModalOpen}
+            onClose={handleCloseReportModal}
+            onSubmit={handleSubmitEntryReport}
+            entry={selectedEntryForReport}
+          />
+        </Suspense>
+      )}
     </FadeTransition>
   );
 }

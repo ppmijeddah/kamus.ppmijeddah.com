@@ -5,7 +5,30 @@ type ReportableEntryData = Pick<
   "indonesia" | "amiyah_arab" | "uuid"
 >;
 
-function constructReportMessage(entryData: ReportableEntryData): string {
+export function reportEntryViaWhatsapp(
+  entryData: ReportableEntryData,
+  problemDescription: string,
+  suggestion?: string,
+): void {
+  const message = constructReportMessage(
+    entryData,
+    problemDescription,
+    suggestion,
+  );
+  const whatsappNumber = "+6285156562419";
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+  if (typeof window !== "undefined") {
+    window.open(whatsappUrl, "_blank");
+  }
+}
+
+function constructReportMessage(
+  entryData: ReportableEntryData,
+  problemDescription: string,
+  suggestion?: string,
+): string {
   const messageParts = [
     "Halo, saya ingin melaporkan potensi kesalahan pada entri kamus berikut:",
     "",
@@ -14,23 +37,13 @@ function constructReportMessage(entryData: ReportableEntryData): string {
     `ID Entri: ${entryData.uuid}`,
     "",
     "Mohon jelaskan kesalahannya di sini:",
-    "[Silakan ketik di sini]",
-    "",
-    "Jika ada, saran perbaikan (opsional):",
-    "[Silakan ketik di sini]",
-    "",
-    "Terima kasih!",
+    problemDescription,
   ];
-  return messageParts.join("\n");
-}
 
-export function reportEntryViaWhatsapp(entryData: ReportableEntryData): void {
-  const message = constructReportMessage(entryData);
-  const whatsappNumber = "+6285156562419";
-  const encodedMessage = encodeURIComponent(message);
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-  if (typeof window !== "undefined") {
-    window.open(whatsappUrl, "_blank");
+  if (suggestion && suggestion.trim() !== "") {
+    messageParts.push("", "Jika ada, saran perbaikan (opsional):", suggestion);
   }
+
+  messageParts.push("", "Terima kasih!");
+  return messageParts.join("\n");
 }
