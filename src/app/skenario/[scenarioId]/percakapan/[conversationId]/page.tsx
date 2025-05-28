@@ -7,7 +7,7 @@ export default function ConversationPage() {
 
   const placeholderConversation: Conversation = {
     uuid: placeholderConversationUuid,
-    scenario_uuid: "13131",
+    scenarioUuid: "13131",
     title: "Dialog Taksi ke Hotel Al-Hamra (dengan negosiasi)",
     description:
       "Contoh percakapan memesan taksi dengan proses negosiasi harga dan memberikan arahan.",

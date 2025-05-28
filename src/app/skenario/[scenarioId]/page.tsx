@@ -1,35 +1,38 @@
-import { Conversation, Scenario } from "@/domain/scenario";
 import ScenarioDetailPageContainer from "@/modules/scenario/components/scenario-detail-page-container";
+import { getScenarioDetailsByUuid } from "@/modules/scenario/api/scenarios";
+import { notFound } from "next/navigation";
 
-export default function ScenarioDetailPage() {
-  const placeholderScenario: Scenario = {
-    uuid: "memesan-taksi",
-    title: "Skenario: Memesan Taksi",
-    description:
-      "Pelajari cara memesan taksi, menyebutkan tujuan, dan berinteraksi dengan sopir.",
-    importanceRank: 1,
-  };
+interface ScenarioDetailPageProps {
+  params: Promise<{
+    scenarioId: string;
+  }>;
+}
 
-  const placeholderConversations: Conversation[] = [
-    {
-      uuid: "dialog-1-taksi-pemula",
-      title: "Dialog 1: Pemesanan Dasar Taksi",
-      description: "Percakapan singkat untuk memesan taksi ke tujuan umum.",
-      scenario_uuid: "memesan-taksi",
-    },
-    {
-      uuid: "dialog-2-taksi-bandara",
-      title: "Dialog 2: Taksi ke Bandara dengan Detail",
-      description:
-        "Percakapan lebih lanjut, termasuk menanyakan perkiraan biaya dan waktu.",
-      scenario_uuid: "memesan-taksi",
-    },
-  ];
+export default async function ScenarioDetailPage({
+  params,
+}: ScenarioDetailPageProps) {
+  const { scenarioId } = await params;
 
-  return (
-    <ScenarioDetailPageContainer
-      scenario={placeholderScenario}
-      conversations={placeholderConversations}
-    />
-  );
+  try {
+    const scenarioData = await getScenarioDetailsByUuid(scenarioId);
+
+    return (
+      <ScenarioDetailPageContainer
+        scenario={scenarioData.scenario}
+        conversations={scenarioData.conversations}
+      />
+    );
+  } catch (error) {
+    console.error(`Failed to load scenario details for ${scenarioId}:`, error);
+
+    if (error instanceof Error) {
+      if (error.message.includes("404")) {
+        notFound();
+      } else {
+        throw error;
+      }
+    } else {
+      throw error;
+    }
+  }
 }

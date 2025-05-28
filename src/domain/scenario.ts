@@ -7,7 +7,7 @@ export interface Scenario {
 
 export interface Conversation {
   uuid: string;
-  scenario_uuid: string;
+  scenarioUuid: string;
   title: string;
   description?: string;
 }

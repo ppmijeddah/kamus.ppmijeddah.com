@@ -8,3 +8,14 @@ export async function getAllScenarios(): Promise<DTO_Scenario[]> {
   );
   return scenarios;
 }
+
+export async function getScenarioByUuid(
+  uuid: string,
+): Promise<DTO_Scenario | null> {
+  const db = await getDb();
+  const scenario = await db.get<DTO_Scenario>(
+    "SELECT id, uuid, title, description, importance_rank FROM scenarios WHERE uuid = ?",
+    uuid,
+  );
+  return scenario || null;
+}
