@@ -11,12 +11,13 @@ interface DictionaryCardBookmarkProps {
 }
 
 export function DictionaryCardBookmark({ entry }: DictionaryCardBookmarkProps) {
-  const { isSaved, toggleSaved } = useSavedStore();
+  const { isDictionaryEntrySaved, toggleSavedDictionaryEntry } =
+    useSavedStore();
   const [isAnimating, setIsAnimating] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleToggleSaved = () => {
-    toggleSaved(entry);
+    toggleSavedDictionaryEntry(entry);
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 300);
   };
@@ -58,12 +59,14 @@ export function DictionaryCardBookmark({ entry }: DictionaryCardBookmarkProps) {
         onFocus={handleFocus}
         className="h-fit ml-2 focus:ring-2 focus:ring-pacamara-secondary focus:ring-offset-2 focus:outline-none rounded-full p-1 transition-all mt-auto"
         aria-label={
-          isSaved(entry) ? "Remove from saved entries" : "Save this entry"
+          isDictionaryEntrySaved(entry)
+            ? "Hapus dari entri tersimpan"
+            : "Simpan entri ini"
         }
       >
         <Bookmark
           className={`w-6 h-6 transform ${isAnimating ? "scale-125" : ""} transition-all duration-300 ${
-            isSaved(entry)
+            isDictionaryEntrySaved(entry)
               ? "fill-pacamara-secondary text-pacamara-secondary"
               : "text-gray-400 hover:text-pacamara-secondary"
           }`}

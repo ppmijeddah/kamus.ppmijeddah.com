@@ -1,38 +1,82 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { DictionaryEntry } from "@/domain/dictionary";
+import type { Conversation } from "@/domain/scenario";
+
+export interface StoredConversation extends Conversation {
+  scenarioUuid: string;
+}
 
 interface SavedState {
-  saved: DictionaryEntry[];
-  isSaved: (entry: DictionaryEntry) => boolean;
-  toggleSaved: (entry: DictionaryEntry) => void;
+  savedDictionaryEntries: DictionaryEntry[];
+  savedConversations: StoredConversation[];
+  isDictionaryEntrySaved: (entry: DictionaryEntry) => boolean;
+  toggleSavedDictionaryEntry: (entry: DictionaryEntry) => void;
+  isConversationSaved: (conversation: Conversation) => boolean;
+  toggleSavedConversation: (storedConversation: StoredConversation) => void;
+  getSavedItemCount: () => number;
 }
 
 export const useSavedStore = create<SavedState>()(
   persist(
     (set, get) => ({
-      saved: [],
+      savedDictionaryEntries: [],
+      savedConversations: [],
 
-      isSaved: (entry: DictionaryEntry) => {
-        return get().saved.some((item) => item.id === entry.id);
+      isDictionaryEntrySaved: (entry: DictionaryEntry) => {
+        return get().savedDictionaryEntries.some(
+          (item) => item.id === entry.id,
+        );
       },
 
-      toggleSaved: (entry: DictionaryEntry) => {
-        const { saved, isSaved } = get();
-
-        if (isSaved(entry)) {
+      toggleSavedDictionaryEntry: (entry: DictionaryEntry) => {
+        const { savedDictionaryEntries, isDictionaryEntrySaved } = get();
+        if (isDictionaryEntrySaved(entry)) {
           set({
-            saved: saved.filter((item) => item.id !== entry.id),
+            savedDictionaryEntries: savedDictionaryEntries.filter(
+              (item) => item.id !== entry.id,
+            ),
           });
         } else {
           set({
-            saved: [...saved, entry],
+            savedDictionaryEntries: [...savedDictionaryEntries, entry],
           });
         }
       },
+
+      isConversationSaved: (conversation: Conversation) => {
+        return get().savedConversations.some(
+          (item) => item.uuid === conversation.uuid,
+        );
+      },
+
+      toggleSavedConversation: (storedConversation: StoredConversation) => {
+        const { savedConversations, isConversationSaved } = get();
+        const baseConversation: Conversation = {
+          uuid: storedConversation.uuid,
+          title: storedConversation.title,
+          description: storedConversation.description,
+        };
+        if (isConversationSaved(baseConversation)) {
+          set({
+            savedConversations: savedConversations.filter(
+              (item) => item.uuid !== storedConversation.uuid,
+            ),
+          });
+        } else {
+          set({
+            savedConversations: [...savedConversations, storedConversation],
+          });
+        }
+      },
+      getSavedItemCount: () => {
+        return (
+          get().savedDictionaryEntries.length + get().savedConversations.length
+        );
+      },
     }),
     {
-      name: "saved-entries-storage",
+      name: "saved-items-storage",
     },
   ),
 );

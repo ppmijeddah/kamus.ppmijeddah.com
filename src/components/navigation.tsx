@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
-import { Book, MessageCircleMore, Bookmark } from "lucide-react";
-import clsx from "clsx";
-import { SavedBadge } from "../modules/saved/components/saved-badge";
+import { Book, ClipboardList, Bookmark } from "lucide-react"; // Added Bookmark back
+import { SavedBadge } from "../modules/saved/components/saved-badge"; // Added SavedBadge back
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -30,10 +30,10 @@ export function Navigation() {
           </NavigationItem>
 
           <NavigationItem
-            href="/terjemah"
-            label="Terjemah"
-            icon={<MessageCircleMore className="w-6 h-6" />}
-            isActive={pathname === "/terjemah"}
+            href="/skenario"
+            label="Skenario"
+            icon={<ClipboardList className="w-6 h-6" />}
+            isActive={pathname.startsWith("/skenario")}
           />
         </div>
       </div>

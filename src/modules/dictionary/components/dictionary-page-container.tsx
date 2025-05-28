@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState, lazy, Suspense } from "react";
 import debounce from "lodash.debounce";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,6 +10,14 @@ import { getEmptyMessage } from "@/modules/search-filter/services/empty";
 import { FadeTransition } from "@/services/animation";
 import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryEntryCount } from "./dictionary-entry-count";
+import { reportEntryViaWhatsapp } from "../services/report-entry-issue";
+import { Loader2 } from "lucide-react";
+
+const ReportEntryModal = lazy(() =>
+  import("./report-entry-modal").then((module) => ({
+    default: module.ReportEntryModal,
+  })),
+);
 
 interface DictionaryPageContainerProps {
   categories: Array<{ id: number; name: string }>;
@@ -40,6 +48,38 @@ function DictionaryPageContainer({
       initialData: shouldUseInitialData ? initialEntries : undefined,
       enabled: !shouldUseInitialData,
     },
+  );
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedEntryForReport, setSelectedEntryForReport] =
+    useState<DictionaryEntry | null>(null);
+
+  const handleOpenReportModal = useCallback((entry: DictionaryEntry) => {
+    setSelectedEntryForReport(entry);
+    setIsReportModalOpen(true);
+  }, []);
+
+  const handleCloseReportModal = useCallback(() => {
+    setIsReportModalOpen(false);
+    setSelectedEntryForReport(null);
+  }, []);
+
+  const handleSubmitEntryReport = useCallback(
+    (problemDescription: string, suggestion?: string) => {
+      if (selectedEntryForReport) {
+        reportEntryViaWhatsapp(
+          {
+            indonesia: selectedEntryForReport.indonesia,
+            amiyah_arab: selectedEntryForReport.amiyah_arab,
+            uuid: selectedEntryForReport.uuid,
+          },
+          problemDescription,
+          suggestion,
+        );
+        handleCloseReportModal();
+      }
+    },
+    [selectedEntryForReport, handleCloseReportModal],
   );
 
   const handleSearch = useCallback(
@@ -111,9 +151,26 @@ function DictionaryPageContainer({
             isLoading={isLoading}
             searchQuery={query}
             emptyMessage={getEmptyMessage(query, categoryId)}
+            onOpenReportModal={handleOpenReportModal}
           />
         )}
       </div>
+      {isReportModalOpen && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          }
+        >
+          <ReportEntryModal
+            isOpen={isReportModalOpen}
+            onClose={handleCloseReportModal}
+            onSubmit={handleSubmitEntryReport}
+            entry={selectedEntryForReport}
+          />
+        </Suspense>
+      )}
     </FadeTransition>
   );
 }

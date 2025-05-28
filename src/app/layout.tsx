@@ -5,6 +5,7 @@ import QueryProvider from "@/lib/react-query";
 import { Suspense } from "react";
 import { Header } from "@/components/header";
 import { Navigation } from "@/components/navigation";
+import ServerProgressProvider from "@/lib/bprogress-next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,18 +32,20 @@ export default function RootLayout({
         className={`${inter.variable} antialiased min-h-svh bg-white dark:bg-pacamara-dark font-pacamara-inter prose dark:prose-invert max-w-full prose-headings:p-0 prose-headings:m-0`}
       >
         <Suspense>
-          <QueryProvider>
-            <div className="pt-16 pb-24">
-              <div className="relative max-w-4xl mx-auto">
-                <Header />
-                {children}
-              </div>
+          <ServerProgressProvider>
+            <QueryProvider>
+              <div className="pt-16 pb-24">
+                <div className="relative max-w-4xl mx-auto">
+                  <Header />
+                  {children}
+                </div>
 
-              <footer className="fixed left-0 bottom-0 right-0">
-                <Navigation />
-              </footer>
-            </div>
-          </QueryProvider>
+                <footer className="fixed left-0 bottom-0 right-0">
+                  <Navigation />
+                </footer>
+              </div>
+            </QueryProvider>
+          </ServerProgressProvider>
         </Suspense>
       </body>
     </html>

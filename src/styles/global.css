@@ -3,98 +3,101 @@
 @tailwind utilities;
 
 html {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  scrollbar-color: theme("colors.pacamara-secondary") transparent;
-  scrollbar-width: auto;
+    scrollbar-color: theme("colors.pacamara-secondary") transparent;
+    scrollbar-width: auto;
 }
 
 html.dark {
-  scrollbar-color: theme("colors.pacamara-secondary")
-    theme("colors.pacamara-dark");
+    scrollbar-color: theme("colors.pacamara-secondary")
+        theme("colors.pacamara-dark");
+}
+
+body {
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {
-  width: 14px;
+    width: 14px;
 }
 
 body::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
 body::-webkit-scrollbar-thumb {
-  background-image: linear-gradient(
-    180deg,
-    theme("colors.pacamara-secondary"),
-    theme("colors.pacamara-accent")
-  );
-  outline: 0px solid theme("colors.pacamara-accent");
-  border-radius: 10px;
+    background-image: linear-gradient(
+        180deg,
+        theme("colors.pacamara-secondary"),
+        theme("colors.pacamara-accent")
+    );
+    outline: 0px solid theme("colors.pacamara-accent");
+    border-radius: 10px;
 }
 
 .gradient-underline {
-  line-height: 0.6em;
-  vertical-align: 0em;
-  border-bottom: 0.15em solid transparent;
-  border-image: linear-gradient(
-    theme("colors.pacamara-secondary") 0%,
-    theme("colors.pacamara-accent") 50%,
-    theme("colors.pacamara-secondary") 100%
-  );
-  border-image-slice: 1;
-  animation: moveGradient 3s ease-in-out infinite;
+    line-height: 0.6em;
+    vertical-align: 0em;
+    border-bottom: 0.15em solid transparent;
+    border-image: linear-gradient(
+        theme("colors.pacamara-secondary") 0%,
+        theme("colors.pacamara-accent") 50%,
+        theme("colors.pacamara-secondary") 100%
+    );
+    border-image-slice: 1;
+    animation: moveGradient 3s ease-in-out infinite;
 
-  @apply transition-all duration-300;
+    @apply transition-all duration-300;
 }
 
 @keyframes moveGradient {
-  0% {
-    background-position: 0% 50%;
-    border-image: linear-gradient(
-        theme("colors.pacamara-secondary") 0%,
-        theme("colors.pacamara-accent") 50%,
-        theme("colors.pacamara-secondary") 100%
-      )
-      1;
-  }
-  50% {
-    background-position: 100% 50%;
-    border-image: linear-gradient(
-        theme("colors.pacamara-accent") 0%,
-        theme("colors.pacamara-secondary") 50%,
-        theme("colors.pacamara-accent") 100%
-      )
-      1;
-  }
-  100% {
-    background-position: 0% 50%;
-    border-image: linear-gradient(
-        theme("colors.pacamara-secondary") 0%,
-        theme("colors.pacamara-accent") 50%,
-        theme("colors.pacamara-secondary") 100%
-      )
-      1;
-  }
+    0% {
+        background-position: 0% 50%;
+        border-image: linear-gradient(
+                theme("colors.pacamara-secondary") 0%,
+                theme("colors.pacamara-accent") 50%,
+                theme("colors.pacamara-secondary") 100%
+            )
+            1;
+    }
+    50% {
+        background-position: 100% 50%;
+        border-image: linear-gradient(
+                theme("colors.pacamara-accent") 0%,
+                theme("colors.pacamara-secondary") 50%,
+                theme("colors.pacamara-accent") 100%
+            )
+            1;
+    }
+    100% {
+        background-position: 0% 50%;
+        border-image: linear-gradient(
+                theme("colors.pacamara-secondary") 0%,
+                theme("colors.pacamara-accent") 50%,
+                theme("colors.pacamara-secondary") 100%
+            )
+            1;
+    }
 }
 
 .gradient-underline span {
-  vertical-align: -0.38em;
+    vertical-align: -0.38em;
 }
 
 @media screen and (min-width: 768px) {
-  .gradient-underline {
-    border-bottom: 0.25em solid transparent;
-  }
+    .gradient-underline {
+        border-bottom: 0.25em solid transparent;
+    }
 }
 
 .font-arabic {
-  font-family: "Amiri", serif;
-  direction: rtl;
+    font-family: "Amiri", serif;
+    direction: rtl;
 }
 
 @layer base {
-  @font-face {
-    font-family: "Amiri";
-    src: url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap");
-  }
+    @font-face {
+        font-family: "Amiri";
+        src: url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap");
+    }
 }

@@ -10,6 +10,7 @@ interface DictionaryListProps {
   emptyMessage?: string;
   isLoading?: boolean;
   searchQuery?: string;
+  onOpenReportModal: (entry: DictionaryEntry) => void;
 }
 
 const ESTIMATED_ROW_HEIGHT = 396;
@@ -19,6 +20,7 @@ export function DictionaryList({
   emptyMessage = "Tidak ada kata yang cocok dengan pencarian Anda.",
   isLoading = false,
   searchQuery = "",
+  onOpenReportModal,
 }: DictionaryListProps) {
   // Local state to delay the removal of loading skeletons
   const [showLoading, setShowLoading] = useState(() => isLoading);
@@ -102,7 +104,11 @@ export function DictionaryList({
                       data-index={virtualRow.index}
                       style={{ paddingBottom: "1rem" }}
                     >
-                      <DictionaryCard entry={entry} searchQuery={searchQuery} />
+                      <DictionaryCard
+                        entry={entry}
+                        searchQuery={searchQuery}
+                        onOpenReportModal={onOpenReportModal}
+                      />
                     </div>
                   </div>
                 );

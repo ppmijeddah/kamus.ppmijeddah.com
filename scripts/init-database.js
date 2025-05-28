@@ -3,8 +3,21 @@ const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const path = require("path");
 const fs = require("fs/promises");
+const { v4: uuidv4 } = require("uuid");
 
 const DB_PATH = path.join(process.cwd(), "data", "dictionary.sqlite");
+const CATEGORY_CSV_PATH = path.join(process.cwd(), "data", "category.csv");
+const DICTIONARY_ENTRIES_CSV_PATH = path.join(
+  process.cwd(),
+  "data",
+  "dictionary-with-uuid.csv",
+);
+const SCENARIO_TSV_PATH = path.join(process.cwd(), "data", "scenario.tsv");
+const CONVERSATION_TSV_PATH = path.join(
+  process.cwd(),
+  "data",
+  "conversation.tsv",
+);
 
 main();
 
@@ -47,17 +60,54 @@ async function initDb() {
       FOREIGN KEY (category_id) REFERENCES categories(id)
     );
 
+    CREATE TABLE IF NOT EXISTS scenarios (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      description TEXT,
+      importance_rank INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS conversations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT NOT NULL UNIQUE,
+      scenario_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (scenario_id) REFERENCES scenarios(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS sentences (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT NOT NULL UNIQUE,
+      conversation_id INTEGER NOT NULL,
+      speaker TEXT NOT NULL,
+      amiyah_text_arab TEXT NOT NULL,
+      amiyah_text_transliteration TEXT NOT NULL,
+      translation_bahasa TEXT NOT NULL,
+      order_in_conversation INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (conversation_id) REFERENCES conversations(id)
+    );
+
     CREATE INDEX IF NOT EXISTS idx_uuid ON dictionary_entries(uuid);
     CREATE INDEX IF NOT EXISTS idx_indonesia ON dictionary_entries(indonesia COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_amiyah ON dictionary_entries(amiyah COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_fushah ON dictionary_entries(fushah COLLATE NOCASE);
     CREATE INDEX IF NOT EXISTS idx_category_id ON dictionary_entries(category_id);
+
+    CREATE INDEX IF NOT EXISTS idx_scenario_uuid ON scenarios(uuid);
+    CREATE INDEX IF NOT EXISTS idx_conversation_uuid ON conversations(uuid);
+    CREATE INDEX IF NOT EXISTS idx_sentence_uuid ON sentences(uuid);
+    CREATE INDEX IF NOT EXISTS idx_conversation_scenario_id ON conversations(scenario_id);
+    CREATE INDEX IF NOT EXISTS idx_sentence_conversation_id ON sentences(conversation_id);
   `);
 
   const categoryCount = await db.get(
     "SELECT COUNT(*) as count FROM categories",
   );
-
   if (categoryCount.count === 0) {
     console.log("Loading categories data...");
     await loadCategoriesData(db);
@@ -68,15 +118,33 @@ async function initDb() {
   const entryCount = await db.get(
     "SELECT COUNT(*) as count FROM dictionary_entries",
   );
-
   if (entryCount.count === 0) {
-    console.log(
-      "No dictionary entries found in database, loading data from CSV...",
-    );
+    console.log("Loading dictionary entries data...");
     await loadDictionaryData(db);
   } else {
     console.log(
       `Database already contains ${entryCount.count} dictionary entries.`,
+    );
+  }
+
+  const scenarioCount = await db.get("SELECT COUNT(*) as count FROM scenarios");
+  if (scenarioCount.count === 0) {
+    console.log("Loading scenarios data...");
+    await loadScenariosData(db);
+  } else {
+    console.log(`Database already contains ${scenarioCount.count} scenarios.`);
+  }
+
+  const conversationCount = await db.get(
+    "SELECT COUNT(*) as count FROM conversations",
+  );
+  const sentenceCount = await db.get("SELECT COUNT(*) as count FROM sentences");
+  if (conversationCount.count === 0 && sentenceCount.count === 0) {
+    console.log("Loading conversations and sentences data...");
+    await loadConversationsAndSentencesData(db);
+  } else {
+    console.log(
+      `Database already contains ${conversationCount.count} conversations and ${sentenceCount.count} sentences.`,
     );
   }
 
@@ -85,11 +153,9 @@ async function initDb() {
 
 async function loadCategoriesData(db) {
   try {
-    const csvPath = path.join(process.cwd(), "data", "category.csv");
-    const csvData = await fs.readFile(csvPath, "utf8");
+    const csvData = await fs.readFile(CATEGORY_CSV_PATH, "utf8");
 
     const lines = csvData.split(/\r?\n/);
-    // Skip header
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const header = lines[0];
 
@@ -101,22 +167,17 @@ async function loadCategoriesData(db) {
     `);
 
     let importedCount = 0;
-
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
-
       const [name, rank] = line.split(",");
-
       if (name && rank) {
         await insert.run(name.trim(), parseInt(rank.trim(), 10));
         importedCount++;
       }
     }
-
     await db.run("COMMIT");
     await insert.finalize();
-
     console.log(`Loaded ${importedCount} categories into database`);
   } catch (error) {
     console.error("Error loading categories data:", error);
@@ -131,39 +192,23 @@ async function loadCategoriesData(db) {
 
 async function loadDictionaryData(db) {
   try {
-    // Load all categories into memory for quick lookups
     const categories = await db.all("SELECT id, name FROM categories");
     const categoryMap = new Map();
-
     categories.forEach((category) => {
       categoryMap.set(category.name.toLowerCase().trim(), category.id);
     });
 
-    const csvPath = path.join(
-      process.cwd(),
-      "data",
-      "dictionary-with-uuid.csv",
-    );
-    const csvData = await fs.readFile(csvPath, "utf8");
+    const csvData = await fs.readFile(DICTIONARY_ENTRIES_CSV_PATH, "utf8");
 
     const lines = csvData.split(/\r?\n/);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const header = lines[0];
 
     await db.run("BEGIN TRANSACTION");
-
     const insert = await db.prepare(`
       INSERT INTO dictionary_entries (
-        uuid,
-        indonesia,
-        amiyah,
-        amiyah_arab,
-        fushah,
-        fushah_arab,
-        category_id,
-        example
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        uuid, indonesia, amiyah, amiyah_arab, fushah, fushah_arab, category_id, example
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     let importedCount = 0;
@@ -174,7 +219,6 @@ async function loadDictionaryData(db) {
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
-
       const [
         uuid,
         indonesia,
@@ -191,7 +235,6 @@ async function loadDictionaryData(db) {
         invalidUuidCount++;
         continue;
       }
-
       if (uuid.trim().length !== 36) {
         console.warn(
           `Skipping line due to potentially invalid UUID format: ${uuid.trim()} in line: ${line}`,
@@ -202,18 +245,15 @@ async function loadDictionaryData(db) {
 
       if (indonesia) {
         let categoryId = null;
-
         if (categoryName && categoryName.trim()) {
           const categoryKey = categoryName.toLowerCase().trim();
           categoryId = categoryMap.get(categoryKey);
-
           if (!categoryId) {
             unknownCategories.add(categoryName.trim());
           }
         } else {
           entriesWithoutCategory++;
         }
-
         await insert.run(
           uuid.trim(),
           indonesia.toLowerCase().trim(),
@@ -221,16 +261,14 @@ async function loadDictionaryData(db) {
           amiyah_arab?.trim() || "",
           fushah?.toLowerCase().trim() || "",
           fushah_arab?.trim() || "",
-          categoryId, // Will be NULL if category not found
+          categoryId,
           example?.trim() || "",
         );
         importedCount++;
       }
     }
-
     await db.run("COMMIT");
     await insert.finalize();
-
     console.log(`Loaded ${importedCount} dictionary entries into database`);
     if (invalidUuidCount > 0) {
       console.warn(
@@ -257,25 +295,211 @@ async function loadDictionaryData(db) {
   }
 }
 
-async function printDatabase(db) {
-  const count = await db.get(
-    "SELECT COUNT(*) as count FROM dictionary_entries",
-  );
-  console.log(`Total entries in database: ${count.count}`);
+async function loadScenariosData(db) {
+  try {
+    const tsvData = await fs.readFile(SCENARIO_TSV_PATH, "utf8");
+    const lines = tsvData.split(/\r?\n/);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const header = lines[0]; // "Nama\tDeskripsi\tRank"
 
-  console.log("\nTable schemas:");
-  const categoriesSchema = await db.all("PRAGMA table_info(categories)");
-  console.log("\nCategories table columns:");
-  categoriesSchema.forEach((column) => {
-    console.log(
-      `- ${column.name} (${column.type}${column.notnull ? ", NOT NULL" : ""}${column.pk ? ", PRIMARY KEY" : ""})`,
+    await db.run("BEGIN TRANSACTION");
+    const insert = await db.prepare(`
+      INSERT INTO scenarios (uuid, title, description, importance_rank)
+      VALUES (?, ?, ?, ?)
+    `);
+
+    let importedCount = 0;
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const [name, description, rank] = line.split("\t"); // Updated delimiter
+      if (name && description && rank) {
+        await insert.run(
+          uuidv4(),
+          name.trim(),
+          description.trim(),
+          parseInt(rank.trim(), 10),
+        );
+        importedCount++;
+      }
+    }
+    await db.run("COMMIT");
+    await insert.finalize();
+    console.log(`Loaded ${importedCount} scenarios into database`);
+  } catch (error) {
+    console.error("Error loading scenarios data:", error);
+    try {
+      await db.run("ROLLBACK");
+    } catch (e) {
+      console.error("Error rolling back transaction:", e);
+    }
+    throw new Error(`Failed to load scenarios data: ${error.message}`);
+  }
+}
+
+async function loadConversationsAndSentencesData(db) {
+  try {
+    // Load scenarios into a map for quick lookup
+    const scenarios = await db.all("SELECT id, title FROM scenarios");
+    const scenarioMap = new Map();
+    scenarios.forEach((scenario) => {
+      scenarioMap.set(scenario.title.trim(), scenario.id);
+    });
+
+    if (scenarioMap.size === 0) {
+      console.warn(
+        "No scenarios found in the database. Cannot link conversations. Please load scenarios first.",
+      );
+      return;
+    }
+
+    const tsvData = await fs.readFile(CONVERSATION_TSV_PATH, "utf8");
+    const lines = tsvData.split(/\r?\n/);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const header = lines[0];
+
+    // Group sentences by conversation title
+    const conversationsData = new Map();
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const [
+        convoTitle,
+        scenarioName,
+        order,
+        speaker,
+        indonesia,
+        amiyah,
+        amiyahArab,
+      ] = line.split("\t");
+
+      if (!convoTitle || !scenarioName) {
+        console.warn(
+          `Skipping line due to missing conversation title or scenario name: ${line}`,
+        );
+        continue;
+      }
+
+      const sentence = {
+        order: parseInt(order.trim(), 10),
+        speaker: speaker.trim(),
+        indonesia: indonesia.trim(),
+        amiyah: amiyah.trim(),
+        amiyahArab: amiyahArab.trim(),
+      };
+
+      if (!conversationsData.has(convoTitle.trim())) {
+        conversationsData.set(convoTitle.trim(), {
+          scenarioName: scenarioName.trim(),
+          sentences: [],
+        });
+      }
+      conversationsData.get(convoTitle.trim()).sentences.push(sentence);
+    }
+
+    await db.run("BEGIN TRANSACTION");
+    const insertConversation = await db.prepare(`
+      INSERT INTO conversations (uuid, scenario_id, title, description)
+      VALUES (?, ?, ?, ?)
+    `);
+    const insertSentence = await db.prepare(`
+      INSERT INTO sentences (uuid, conversation_id, speaker, amiyah_text_transliteration, amiyah_text_arab, translation_bahasa, order_in_conversation)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    let importedConversations = 0;
+    let importedSentences = 0;
+    let unknownScenarios = new Set();
+
+    for (const [convoTitle, data] of conversationsData) {
+      const scenarioId = scenarioMap.get(data.scenarioName);
+      if (!scenarioId) {
+        unknownScenarios.add(data.scenarioName);
+        console.warn(
+          `Unknown scenario "${data.scenarioName}" for conversation "${convoTitle}". Skipping this conversation.`,
+        );
+        continue;
+      }
+
+      const conversationUuid = uuidv4();
+      const result = await insertConversation.run(
+        conversationUuid,
+        scenarioId,
+        convoTitle,
+        "", // TODO: maybe add description to conversation
+      );
+      const conversationDbId = result.lastID;
+      importedConversations++;
+
+      data.sentences.sort((a, b) => a.order - b.order); // Ensure sentences are ordered correctly
+
+      for (const sentence of data.sentences) {
+        await insertSentence.run(
+          uuidv4(),
+          conversationDbId,
+          sentence.speaker,
+          sentence.amiyah,
+          sentence.amiyahArab,
+          sentence.indonesia,
+          sentence.order,
+        );
+        importedSentences++;
+      }
+    }
+
+    await db.run("COMMIT");
+    await insertConversation.finalize();
+    await insertSentence.finalize();
+
+    console.log(`Loaded ${importedConversations} conversations into database`);
+    console.log(`Loaded ${importedSentences} sentences into database`);
+    if (unknownScenarios.size > 0) {
+      console.warn(
+        `Could not find the following scenarios in the database: ${Array.from(unknownScenarios).join(", ")}`,
+      );
+    }
+  } catch (error) {
+    console.error("Error loading conversations and sentences data:", error);
+    try {
+      await db.run("ROLLBACK");
+    } catch (e) {
+      console.error("Error rolling back transaction:", e);
+    }
+    throw new Error(
+      `Failed to load conversations and sentences data: ${error.message}`,
     );
-  });
-  const entriesSchema = await db.all("PRAGMA table_info(dictionary_entries)");
-  console.log("\nDictionary entries table columns:");
-  entriesSchema.forEach((column) => {
-    console.log(
-      `- ${column.name} (${column.type}${column.notnull ? ", NOT NULL" : ""}${column.pk ? ", PRIMARY KEY" : ""})`,
-    );
-  });
+  }
+}
+
+async function printDatabase(db) {
+  const tables = [
+    "categories",
+    "dictionary_entries",
+    "scenarios",
+    "conversations",
+    "sentences",
+  ];
+
+  for (const table of tables) {
+    try {
+      const count = await db.get(`SELECT COUNT(*) as count FROM ${table}`);
+      console.log(`\nTotal entries in ${table}: ${count.count}`);
+
+      const schema = await db.all(`PRAGMA table_info(${table})`);
+      console.log(`\n${table} table columns:`);
+      schema.forEach((column) => {
+        console.log(
+          `- ${column.name} (${column.type}${column.notnull ? ", NOT NULL" : ""}${column.pk ? ", PRIMARY KEY" : ""})`,
+        );
+      });
+    } catch (err) {
+      // If a table doesn't exist yet (e.g. during initial setup before all tables are created),
+      // PRAGMA table_info might fail. This is okay for this informational function.
+      if (err.message.includes("no such table")) {
+        console.log(`\nTable ${table} does not exist yet.`);
+      } else {
+        console.error(`Error printing info for table ${table}:`, err);
+      }
+    }
+  }
 }

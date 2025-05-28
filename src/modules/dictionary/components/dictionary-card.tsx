@@ -2,19 +2,20 @@ import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryCardBookmark } from "../../saved/components/dictionary-card-bookmark";
 import { HighlightText } from "./highlight-text";
 import { toSentenceCase } from "@/services/text";
-import { reportEntryViaWhatsapp } from "../services/report-entry-issue";
 import { Flag } from "lucide-react";
 
 interface DictionaryCardProps {
   entry?: DictionaryEntry;
   isLoading?: boolean;
   searchQuery?: string;
+  onOpenReportModal?: (entry: DictionaryEntry) => void;
 }
 
 export function DictionaryCard({
   entry,
   isLoading = false,
   searchQuery = "",
+  onOpenReportModal,
 }: DictionaryCardProps) {
   if (isLoading) {
     return (
@@ -57,15 +58,9 @@ export function DictionaryCard({
     );
   }
 
-  const handleReportIssue = () => {
-    if (!entry) {
-      return;
-    }
-    const { indonesia, amiyah_arab, uuid } = entry;
-    if (indonesia && amiyah_arab && uuid) {
-      reportEntryViaWhatsapp({ indonesia, amiyah_arab, uuid });
-    } else {
-      console.error("Missing data for reporting issue:", entry);
+  const handleReportIssueClick = () => {
+    if (entry) {
+      onOpenReportModal?.(entry);
     }
   };
 
@@ -151,7 +146,7 @@ export function DictionaryCard({
           <div className="flex items-center">
             {entry && (
               <button
-                onClick={handleReportIssue}
+                onClick={handleReportIssueClick}
                 className="h-fit ml-2 focus:ring-2 focus:ring-pacamara-secondary focus:ring-offset-2 focus:outline-none rounded-full p-1 transition-all"
                 aria-label="Report issue with this entry"
                 title="Laporkan Kesalahan"
