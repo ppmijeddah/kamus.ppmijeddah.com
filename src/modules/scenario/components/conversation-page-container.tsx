@@ -1,10 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useState, lazy, Suspense } from "react";
 import Link from "next/link";
 import { FadeTransition } from "@/services/animation";
 import { Conversation, Sentence } from "@/domain/scenario";
 import { ConversationBookmarkButton } from "@/modules/saved/components/conversation-bookmark-button";
+import { Flag, Loader2 } from "lucide-react";
+import { reportSentenceIssueViaWhatsapp } from "../services/report-sentence-issue";
+
+const ReportSentenceModal = lazy(() =>
+  import("./report-sentence-modal").then((module) => ({
+    default: module.ReportSentenceModal,
+  })),
+);
 
 interface ConversationPageContainerProps {
   conversation: Conversation;
@@ -17,6 +25,36 @@ export default function ConversationPageContainer({
   sentences,
   scenarioUuid,
 }: ConversationPageContainerProps) {
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedSentenceForReport, setSelectedSentenceForReport] =
+    useState<Sentence | null>(null);
+
+  const handleOpenReportModal = (sentence: Sentence) => {
+    setSelectedSentenceForReport(sentence);
+    setIsReportModalOpen(true);
+  };
+
+  const handleCloseReportModal = () => {
+    setIsReportModalOpen(false);
+    setSelectedSentenceForReport(null);
+  };
+
+  const handleSubmitReport = (
+    problemDescription: string,
+    suggestion?: string,
+  ) => {
+    if (selectedSentenceForReport) {
+      reportSentenceIssueViaWhatsapp({
+        sentence: selectedSentenceForReport,
+        problemDescription,
+        suggestion,
+        scenarioUuid: scenarioUuid,
+        conversationUuid: conversation.uuid,
+      });
+      handleCloseReportModal();
+    }
+  };
+
   return (
     <FadeTransition>
       <div className="p-4 md:px-8 md:py-6 space-y-10 not-prose">
@@ -59,33 +97,64 @@ export default function ConversationPageContainer({
               .map((sentence) => (
                 <div
                   key={sentence.uuid}
-                  className={`flex ${
+                  className={`flex relative ${
                     sentence.speaker === "Anda"
                       ? "justify-end"
                       : "justify-start"
                   }`}
                 >
                   {sentence.speaker === "Anda" ? (
-                    <UserBubble sentence={sentence} />
+                    <UserBubble
+                      sentence={sentence}
+                      onReport={() => handleOpenReportModal(sentence)}
+                    />
                   ) : (
-                    <OtherSpeakerBubble sentence={sentence} />
+                    <OtherSpeakerBubble
+                      sentence={sentence}
+                      onReport={() => handleOpenReportModal(sentence)}
+                    />
                   )}
                 </div>
               ))
           )}
         </div>
       </div>
+      {isReportModalOpen && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+              <Loader2 className="w-10 h-10 text-white animate-spin" />
+            </div>
+          }
+        >
+          <ReportSentenceModal
+            isOpen={isReportModalOpen}
+            onClose={handleCloseReportModal}
+            onSubmit={handleSubmitReport}
+            sentence={selectedSentenceForReport}
+          />
+        </Suspense>
+      )}
     </FadeTransition>
   );
 }
 
 interface BubbleProps {
   sentence: Sentence;
+  onReport: () => void;
 }
 
-function UserBubble({ sentence }: BubbleProps): React.ReactElement {
+function UserBubble({ sentence, onReport }: BubbleProps): React.ReactElement {
   return (
-    <div className="max-w-lg p-2.5 rounded-lg shadow-md bg-pacamara-primary text-white rounded-br-none">
+    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-pacamara-primary text-white rounded-br-none relative">
+      <button
+        onClick={onReport}
+        className="absolute top-1 left-1 p-1 bg-black/20 hover:bg-black/40 rounded-full"
+        aria-label="Laporkan kalimat ini"
+        title="Laporkan kesalahan"
+      >
+        <Flag size={16} className="text-white" />
+      </button>
       <p className="text-xs font-semibold mb-0.5 text-right text-pacamara-accent-light opacity-90">
         {sentence.speaker}
       </p>
@@ -101,9 +170,20 @@ function UserBubble({ sentence }: BubbleProps): React.ReactElement {
   );
 }
 
-function OtherSpeakerBubble({ sentence }: BubbleProps): React.ReactElement {
+function OtherSpeakerBubble({
+  sentence,
+  onReport,
+}: BubbleProps): React.ReactElement {
   return (
-    <div className="max-w-lg p-2.5 rounded-lg shadow-md bg-[#8F961A] dark:bg-[#4A4E0D] text-white rounded-bl-none">
+    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-[#8F961A] dark:bg-[#4A4E0D] text-white rounded-bl-none relative">
+      <button
+        onClick={onReport}
+        className="absolute top-1 right-1 p-1 bg-black/20 hover:bg-black/40 rounded-full"
+        aria-label="Laporkan kalimat ini"
+        title="Laporkan kesalahan"
+      >
+        <Flag size={16} className="text-white" />
+      </button>
       <p className="text-xs font-semibold mb-0.5 text-left text-white opacity-75">
         {sentence.speaker}
       </p>
