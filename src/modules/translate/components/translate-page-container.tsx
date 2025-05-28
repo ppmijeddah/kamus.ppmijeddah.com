@@ -6,7 +6,7 @@ import { FadeTransition } from "@/services/animation";
 function TranslatePageContainer() {
   return (
     <FadeTransition>
-      <div className="text-center p-8">
+      <div className="text-center px-4 py-8">
         <h1 className="text-2xl font-bold text-gray-700 dark:text-white mb-4">
           Penerjemah AI Indo ⇔ Arab Saudi Amiyah - Segera Hadir!
         </h1>
