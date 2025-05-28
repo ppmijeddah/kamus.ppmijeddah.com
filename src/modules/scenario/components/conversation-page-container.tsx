@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { FadeTransition } from "@/services/animation";
 import { Conversation, Sentence } from "@/domain/scenario";
+import { ConversationBookmarkButton } from "@/modules/saved/components/conversation-bookmark-button";
 
 interface ConversationPageContainerProps {
   conversation: Conversation;
@@ -26,15 +27,22 @@ export default function ConversationPageContainer({
           >
             &larr; Kembali ke Daftar Percakapan
           </Link>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-1">
-              {conversation.title}
-            </h1>
-            {conversation.description && (
-              <p className="text-gray-600 dark:text-gray-300 mt-1">
-                {conversation.description}
-              </p>
-            )}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-1">
+                {conversation.title}
+              </h1>
+              {conversation.description && (
+                <p className="text-gray-600 dark:text-gray-300 mt-1">
+                  {conversation.description}
+                </p>
+              )}
+            </div>
+            <ConversationBookmarkButton
+              conversation={conversation}
+              scenarioUuid={scenarioUuid}
+              className="ml-4 flex-shrink-0"
+            />
           </div>
         </div>
 
