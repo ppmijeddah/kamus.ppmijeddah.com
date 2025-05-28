@@ -35,7 +35,13 @@ export function SearchFilter({
 }: SearchFilterProps) {
   return (
     <div className="z-10 bg-white dark:bg-gray-800 md:rounded-lg shadow-lg p-4 mb-6 sticky top-0 md:mx-4">
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-4 md:space-y-0">
+      <div
+        className={`flex ${
+          hideCategoryFilter
+            ? "flex-row items-center space-x-4"
+            : "flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0"
+        }`}
+      >
         {/* Search Input */}
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
