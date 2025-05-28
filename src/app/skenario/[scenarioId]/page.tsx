@@ -7,7 +7,7 @@ export default function ScenarioDetailPage() {
     title: "Skenario: Memesan Taksi",
     description:
       "Pelajari cara memesan taksi, menyebutkan tujuan, dan berinteraksi dengan sopir.",
-    importance_rank: 1,
+    importanceRank: 1,
   };
 
   const placeholderConversations: Conversation[] = [

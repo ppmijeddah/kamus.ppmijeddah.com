@@ -2,7 +2,7 @@ export interface Scenario {
   uuid: string;
   title: string;
   description: string;
-  importance_rank: number;
+  importanceRank: number;
 }
 
 export interface Conversation {
@@ -22,5 +22,5 @@ export interface Sentence {
 }
 
 export function sortScenariosByImportance(scenarios: Scenario[]): Scenario[] {
-  return [...scenarios].sort((a, b) => a.importance_rank - b.importance_rank);
+  return [...scenarios].sort((a, b) => a.importanceRank - b.importanceRank);
 }
