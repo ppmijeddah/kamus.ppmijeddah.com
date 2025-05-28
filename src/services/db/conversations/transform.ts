@@ -6,7 +6,6 @@ export function transformConversationToDomain(
 ): Conversation {
   return {
     uuid: dto.uuid,
-    scenarioUuid: dto.scenario_uuid,
     title: dto.title,
     description: dto.description,
   };

@@ -8,16 +8,33 @@ export async function getConversationsByScenarioId(
   const conversations = await db.all<DTO_Conversation[]>(
     `
         SELECT
-          c.uuid,
-          c.title,
-          c.description,
-          s.uuid as scenario_uuid
-        FROM conversations c
-        JOIN scenarios s ON c.scenario_id = s.id
-        WHERE c.scenario_id = ?
-        ORDER BY c.id ASC
+          id,
+          uuid,
+          title,
+          description
+        FROM conversations
+        WHERE scenario_id = ?
       `,
     scenarioId,
   );
   return conversations;
+}
+
+export async function getConversationByUuid(
+  uuid: string,
+): Promise<DTO_Conversation | null> {
+  const db = await getDb();
+  const conversation = await db.get<DTO_Conversation>(
+    `
+    SELECT
+      id,
+      uuid,
+      title,
+      description
+    FROM conversations
+    WHERE uuid = ?
+  `,
+    uuid,
+  );
+  return conversation || null;
 }

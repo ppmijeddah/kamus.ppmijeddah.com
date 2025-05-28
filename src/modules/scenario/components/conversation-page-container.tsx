@@ -47,7 +47,7 @@ export default function ConversationPageContainer({
             </div>
           ) : (
             sentences
-              .sort((a, b) => a.order_in_conversation - b.order_in_conversation)
+              .sort((a, b) => a.orderInConversation - b.orderInConversation)
               .map((sentence) => (
                 <div
                   key={sentence.uuid}
@@ -81,13 +81,13 @@ function UserBubble({ sentence }: BubbleProps): React.ReactElement {
       <p className="text-xs font-semibold mb-0.5 text-right text-pacamara-accent-light opacity-90">
         {sentence.speaker}
       </p>
-      <p className="text-base mb-0.5">{sentence.amiyah_text_transliteration}</p>
+      <p className="text-base mb-0.5">{sentence.amiyahTextTransliteration}</p>
       <p className="text-base font-arabic text-right">
-        {sentence.amiyah_text_arab}
+        {sentence.amiyahTextArab}
       </p>
       <div className="my-3 h-px bg-white/30"></div>
       <p className="text-xs text-gray-200 opacity-90">
-        {sentence.translation_bahasa}
+        {sentence.translationBahasa}
       </p>
     </div>
   );
@@ -99,13 +99,13 @@ function OtherSpeakerBubble({ sentence }: BubbleProps): React.ReactElement {
       <p className="text-xs font-semibold mb-0.5 text-left text-white opacity-75">
         {sentence.speaker}
       </p>
-      <p className="text-base mb-0.5">{sentence.amiyah_text_transliteration}</p>
+      <p className="text-base mb-0.5">{sentence.amiyahTextTransliteration}</p>
       <p className="text-base font-arabic text-right">
-        {sentence.amiyah_text_arab}
+        {sentence.amiyahTextArab}
       </p>
       <div className="my-3 h-px bg-white/40 dark:bg-white/30"></div>
       <p className="text-xs text-white opacity-90">
-        {sentence.translation_bahasa}
+        {sentence.translationBahasa}
       </p>
     </div>
   );

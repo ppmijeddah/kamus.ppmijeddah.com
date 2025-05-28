@@ -7,7 +7,6 @@ export interface Scenario {
 
 export interface Conversation {
   uuid: string;
-  scenarioUuid: string;
   title: string;
   description?: string;
 }
@@ -15,10 +14,10 @@ export interface Conversation {
 export interface Sentence {
   uuid: string;
   speaker: string;
-  amiyah_text_transliteration: string;
-  amiyah_text_arab: string;
-  translation_bahasa: string;
-  order_in_conversation: number;
+  amiyahTextTransliteration: string;
+  amiyahTextArab: string;
+  translationBahasa: string;
+  orderInConversation: number;
 }
 
 export function sortScenariosByImportance(scenarios: Scenario[]): Scenario[] {
