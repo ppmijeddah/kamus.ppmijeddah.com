@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, lazy, Suspense } from "react";
+import React, { lazy, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { FadeTransition } from "@/services/animation";
 import { Conversation, Sentence } from "@/domain/scenario";
 import { ConversationBookmarkButton } from "@/modules/saved/components/conversation-bookmark-button";
 import { Flag, Loader2 } from "lucide-react";
 import { reportSentenceIssueViaWhatsapp } from "../services/report-sentence-issue";
+import { useConversationPageStore } from "../store/conversation-page-store";
 
 const ReportSentenceModal = lazy(() =>
   import("./report-sentence-modal").then((module) => ({
@@ -25,35 +26,44 @@ export default function ConversationPageContainer({
   sentences,
   scenarioUuid,
 }: ConversationPageContainerProps) {
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [selectedSentenceForReport, setSelectedSentenceForReport] =
-    useState<Sentence | null>(null);
+  const {
+    isReportModalOpen,
+    selectedSentenceForReport,
+    openReportModal,
+    closeReportModal,
+  } = useConversationPageStore();
 
-  const handleOpenReportModal = (sentence: Sentence) => {
-    setSelectedSentenceForReport(sentence);
-    setIsReportModalOpen(true);
-  };
+  const handleOpenReportModal = useCallback(
+    (sentence: Sentence) => {
+      openReportModal(sentence);
+    },
+    [openReportModal],
+  );
 
-  const handleCloseReportModal = () => {
-    setIsReportModalOpen(false);
-    setSelectedSentenceForReport(null);
-  };
+  const handleCloseReportModal = useCallback(() => {
+    closeReportModal();
+  }, [closeReportModal]);
 
-  const handleSubmitReport = (
-    problemDescription: string,
-    suggestion?: string,
-  ) => {
-    if (selectedSentenceForReport) {
-      reportSentenceIssueViaWhatsapp({
-        sentence: selectedSentenceForReport,
-        problemDescription,
-        suggestion,
-        scenarioUuid: scenarioUuid,
-        conversationUuid: conversation.uuid,
-      });
-      handleCloseReportModal();
-    }
-  };
+  const handleSubmitReport = useCallback(
+    (problemDescription: string, suggestion?: string) => {
+      if (selectedSentenceForReport) {
+        reportSentenceIssueViaWhatsapp({
+          sentence: selectedSentenceForReport,
+          problemDescription,
+          suggestion,
+          scenarioUuid: scenarioUuid,
+          conversationUuid: conversation.uuid,
+        });
+        handleCloseReportModal();
+      }
+    },
+    [
+      selectedSentenceForReport,
+      scenarioUuid,
+      conversation.uuid,
+      handleCloseReportModal,
+    ],
+  );
 
   return (
     <FadeTransition>

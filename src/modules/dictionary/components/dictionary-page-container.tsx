@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, lazy, Suspense } from "react";
+import { useCallback, lazy, Suspense } from "react"; // Removed useState
 import debounce from "lodash.debounce";
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,6 +12,7 @@ import { DictionaryEntry } from "@/domain/dictionary";
 import { DictionaryEntryCount } from "./dictionary-entry-count";
 import { reportEntryViaWhatsapp } from "../services/report-entry-issue";
 import { Loader2 } from "lucide-react";
+import { useDictionaryPageStore } from "../store/dictionary-page-store";
 
 const ReportEntryModal = lazy(() =>
   import("./report-entry-modal").then((module) => ({
@@ -35,6 +36,13 @@ function DictionaryPageContainer({
     ? parseInt(searchParams.get("category") || "0", 10)
     : undefined;
 
+  const {
+    isReportModalOpen,
+    selectedEntryForReport,
+    openReportModal,
+    closeReportModal,
+  } = useDictionaryPageStore();
+
   const shouldUseInitialData = !query && categoryId === undefined;
 
   const {
@@ -50,19 +58,16 @@ function DictionaryPageContainer({
     },
   );
 
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [selectedEntryForReport, setSelectedEntryForReport] =
-    useState<DictionaryEntry | null>(null);
-
-  const handleOpenReportModal = useCallback((entry: DictionaryEntry) => {
-    setSelectedEntryForReport(entry);
-    setIsReportModalOpen(true);
-  }, []);
+  const handleOpenReportModal = useCallback(
+    (entry: DictionaryEntry) => {
+      openReportModal(entry);
+    },
+    [openReportModal],
+  );
 
   const handleCloseReportModal = useCallback(() => {
-    setIsReportModalOpen(false);
-    setSelectedEntryForReport(null);
-  }, []);
+    closeReportModal();
+  }, [closeReportModal]);
 
   const handleSubmitEntryReport = useCallback(
     (problemDescription: string, suggestion?: string) => {
