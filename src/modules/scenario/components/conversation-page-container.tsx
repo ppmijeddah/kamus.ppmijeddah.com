@@ -146,7 +146,7 @@ interface BubbleProps {
 
 function UserBubble({ sentence, onReport }: BubbleProps): React.ReactElement {
   return (
-    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-pacamara-primary text-white rounded-br-none relative">
+    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-pacamara-primary text-white rounded-br-none relative min-w-[12rem]">
       <button
         onClick={onReport}
         className="absolute top-1 left-1 p-1 bg-black/20 hover:bg-black/40 rounded-full"
@@ -175,7 +175,7 @@ function OtherSpeakerBubble({
   onReport,
 }: BubbleProps): React.ReactElement {
   return (
-    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-[#8F961A] dark:bg-[#4A4E0D] text-white rounded-bl-none relative">
+    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-[#8F961A] dark:bg-[#4A4E0D] text-white rounded-bl-none relative min-w-[12rem]">
       <button
         onClick={onReport}
         className="absolute top-1 right-1 p-1 bg-black/20 hover:bg-black/40 rounded-full"
