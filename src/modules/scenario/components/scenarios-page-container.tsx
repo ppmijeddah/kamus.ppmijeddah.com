@@ -35,14 +35,14 @@ export default function ScenariosPageContainer({
                 >
                   <div className="flex justify-between items-center">
                     <div>
-                      <h2 className="text-xl font-semibold text-pacamara-primary dark:text-pacamara-accent group-hover:text-pacamara-secondary dark:group-hover:text-pacamara-accent-hover mb-1">
+                      <h2 className="text-xl font-semibold text-pacamara-primary dark:text-white group-hover:text-pacamara-secondary dark:group-hover:text-white mb-1">
                         {scenario.title}
                       </h2>
                       <p className="text-gray-600 dark:text-gray-300">
                         {scenario.description}
                       </p>
                     </div>
-                    <ChevronRight className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-pacamara-secondary dark:group-hover:text-pacamara-accent transition-colors" />
+                    <ChevronRight className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-pacamara-secondary dark:group-hover:text-white transition-colors" />
                   </div>
                 </Link>
               </li>

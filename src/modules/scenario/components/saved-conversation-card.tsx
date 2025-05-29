@@ -32,8 +32,8 @@ export function SavedConversationCard({
             className="no-underline group"
           >
             <div className="flex items-center mb-1">
-              <MessageSquareText className="w-5 h-5 text-pacamara-primary dark:text-pacamara-accent mr-2 flex-shrink-0" />
-              <h3 className="text-lg font-semibold text-pacamara-primary dark:text-pacamara-accent group-hover:text-pacamara-secondary dark:group-hover:text-pacamara-accent-hover">
+              <MessageSquareText className="w-5 h-5 text-pacamara-primary dark:text-white mr-2 flex-shrink-0" />
+              <h3 className="text-lg font-semibold text-pacamara-primary dark:text-white group-hover:text-pacamara-secondary dark:group-hover:text-white">
                 <HighlightText text={title} query={searchQuery} />
               </h3>
             </div>
