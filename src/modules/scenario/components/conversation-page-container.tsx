@@ -155,7 +155,7 @@ function UserBubble({ sentence, onReport }: BubbleProps): React.ReactElement {
       >
         <Flag size={16} className="text-white" />
       </button>
-      <p className="text-xs font-semibold mb-0.5 text-right text-pacamara-accent-light opacity-90">
+      <p className="text-xs font-semibold mb-0.5 text-pacamara-accent-light opacity-90">
         {sentence.speaker}
       </p>
       <p className="text-base mb-0.5">{sentence.amiyahTextTransliteration}</p>
