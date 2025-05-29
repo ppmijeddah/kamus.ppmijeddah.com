@@ -133,7 +133,10 @@ function DictionaryPageContainer({
         onReset={handleReset}
       />
 
-      {entries.length > 0 && <DictionaryEntryCount count={entries.length} />}
+      <DictionaryEntryCount
+        count={entries.length}
+        isVisible={entries.length > 0}
+      />
 
       <div className="space-y-4 px-4">
         {isError ? (
