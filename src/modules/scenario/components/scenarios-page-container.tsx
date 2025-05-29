@@ -50,7 +50,7 @@ export default function ScenariosPageContainer({
           </ul>
         )}
         {sortedScenarios.length > 0 && (
-          <div className="mt-8 text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
             <p>Lebih banyak skenario akan ditambahkan segera!</p>
           </div>
         )}
