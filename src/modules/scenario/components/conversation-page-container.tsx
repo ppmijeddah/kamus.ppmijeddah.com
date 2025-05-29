@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, lazy, Suspense } from "react";
+import React, { lazy, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { FadeTransition } from "@/services/animation";
 import { Conversation, Sentence } from "@/domain/scenario";
 import { ConversationBookmarkButton } from "@/modules/saved/components/conversation-bookmark-button";
 import { Flag, Loader2 } from "lucide-react";
 import { reportSentenceIssueViaWhatsapp } from "../services/report-sentence-issue";
+import { useConversationPageStore } from "../store/conversation-page-store";
 
 const ReportSentenceModal = lazy(() =>
   import("./report-sentence-modal").then((module) => ({
@@ -25,35 +26,44 @@ export default function ConversationPageContainer({
   sentences,
   scenarioUuid,
 }: ConversationPageContainerProps) {
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [selectedSentenceForReport, setSelectedSentenceForReport] =
-    useState<Sentence | null>(null);
+  const {
+    isReportModalOpen,
+    selectedSentenceForReport,
+    openReportModal,
+    closeReportModal,
+  } = useConversationPageStore();
 
-  const handleOpenReportModal = (sentence: Sentence) => {
-    setSelectedSentenceForReport(sentence);
-    setIsReportModalOpen(true);
-  };
+  const handleOpenReportModal = useCallback(
+    (sentence: Sentence) => {
+      openReportModal(sentence);
+    },
+    [openReportModal],
+  );
 
-  const handleCloseReportModal = () => {
-    setIsReportModalOpen(false);
-    setSelectedSentenceForReport(null);
-  };
+  const handleCloseReportModal = useCallback(() => {
+    closeReportModal();
+  }, [closeReportModal]);
 
-  const handleSubmitReport = (
-    problemDescription: string,
-    suggestion?: string,
-  ) => {
-    if (selectedSentenceForReport) {
-      reportSentenceIssueViaWhatsapp({
-        sentence: selectedSentenceForReport,
-        problemDescription,
-        suggestion,
-        scenarioUuid: scenarioUuid,
-        conversationUuid: conversation.uuid,
-      });
-      handleCloseReportModal();
-    }
-  };
+  const handleSubmitReport = useCallback(
+    (problemDescription: string, suggestion?: string) => {
+      if (selectedSentenceForReport) {
+        reportSentenceIssueViaWhatsapp({
+          sentence: selectedSentenceForReport,
+          problemDescription,
+          suggestion,
+          scenarioUuid: scenarioUuid,
+          conversationUuid: conversation.uuid,
+        });
+        handleCloseReportModal();
+      }
+    },
+    [
+      selectedSentenceForReport,
+      scenarioUuid,
+      conversation.uuid,
+      handleCloseReportModal,
+    ],
+  );
 
   return (
     <FadeTransition>
@@ -146,7 +156,7 @@ interface BubbleProps {
 
 function UserBubble({ sentence, onReport }: BubbleProps): React.ReactElement {
   return (
-    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-pacamara-primary text-white rounded-br-none relative">
+    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-pacamara-primary text-white rounded-br-none relative min-w-[12rem]">
       <button
         onClick={onReport}
         className="absolute top-1 left-1 p-1 bg-black/20 hover:bg-black/40 rounded-full"
@@ -155,7 +165,7 @@ function UserBubble({ sentence, onReport }: BubbleProps): React.ReactElement {
       >
         <Flag size={16} className="text-white" />
       </button>
-      <p className="text-xs font-semibold mb-0.5 text-right text-pacamara-accent-light opacity-90">
+      <p className="text-xs font-semibold mb-0.5 text-pacamara-accent-light opacity-90">
         {sentence.speaker}
       </p>
       <p className="text-base mb-0.5">{sentence.amiyahTextTransliteration}</p>
@@ -175,7 +185,7 @@ function OtherSpeakerBubble({
   onReport,
 }: BubbleProps): React.ReactElement {
   return (
-    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-[#8F961A] dark:bg-[#4A4E0D] text-white rounded-bl-none relative">
+    <div className="max-w-lg p-2.5 pt-10 rounded-lg shadow-md bg-[#8F961A] dark:bg-[#4A4E0D] text-white rounded-bl-none relative min-w-[12rem]">
       <button
         onClick={onReport}
         className="absolute top-1 right-1 p-1 bg-black/20 hover:bg-black/40 rounded-full"

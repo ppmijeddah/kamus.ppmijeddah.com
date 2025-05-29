@@ -58,9 +58,9 @@ export default function ScenarioDetailPageContainer({
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex items-center">
-                          <MessageSquareText className="w-6 h-6 text-pacamara-primary dark:text-pacamara-accent mr-4 flex-shrink-0" />
+                          <MessageSquareText className="w-6 h-6 text-pacamara-primary dark:text-white mr-4 flex-shrink-0" />
                           <div>
-                            <h3 className="text-lg font-semibold text-pacamara-primary dark:text-pacamara-accent group-hover:text-pacamara-secondary dark:group-hover:text-pacamara-accent-hover mb-1">
+                            <h3 className="text-lg font-semibold text-pacamara-primary dark:text-white group-hover:text-pacamara-secondary dark:group-hover:text-white mb-1">
                               {conversation.title}
                             </h3>
                             {conversation.description && (
@@ -70,7 +70,7 @@ export default function ScenarioDetailPageContainer({
                             )}
                           </div>
                         </div>
-                        <ChevronRight className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-pacamara-secondary dark:group-hover:text-pacamara-accent transition-colors" />
+                        <ChevronRight className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-pacamara-secondary dark:group-hover:text-white transition-colors" />
                       </div>
                     </Link>
                   </li>

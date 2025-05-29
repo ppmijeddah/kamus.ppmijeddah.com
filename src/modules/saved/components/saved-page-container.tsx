@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useMemo, lazy, Suspense } from "react";
+import { useCallback, useMemo, lazy, Suspense } from "react"; // Removed useState
 import { DictionaryList } from "@/modules/dictionary/components/dictionary-list";
-import { useSavedStore } from "@/modules/saved/store/saved-store";
+import { useSavedStore } from "@/modules/saved/store/saved-store"; // This is for the actual saved items
+import { useSavedPageStore } from "../store/saved-page-store"; // Import the new store for UI state
 import { SearchFilter } from "@/modules/search-filter/components/search-filter";
 import { getEmptyMessageForSavedPage } from "@/modules/search-filter/services/empty";
 import { FadeTransition } from "@/services/animation";
@@ -26,21 +27,25 @@ function SavedPageContainer() {
   );
   const savedConversations = useSavedStore((state) => state.savedConversations);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const {
+    searchTerm,
+    setSearchTerm,
+    isReportModalOpen,
+    selectedEntryForReport,
+    openReportModal,
+    closeReportModal,
+  } = useSavedPageStore();
 
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [selectedEntryForReport, setSelectedEntryForReport] =
-    useState<DictionaryEntry | null>(null);
-
-  const handleOpenReportModal = useCallback((entry: DictionaryEntry) => {
-    setSelectedEntryForReport(entry);
-    setIsReportModalOpen(true);
-  }, []);
+  const handleOpenReportModal = useCallback(
+    (entry: DictionaryEntry) => {
+      openReportModal(entry);
+    },
+    [openReportModal],
+  );
 
   const handleCloseReportModal = useCallback(() => {
-    setIsReportModalOpen(false);
-    setSelectedEntryForReport(null);
-  }, []);
+    closeReportModal();
+  }, [closeReportModal]);
 
   const handleSubmitEntryReport = useCallback(
     (problemDescription: string, suggestion?: string) => {
@@ -60,14 +65,17 @@ function SavedPageContainer() {
     [selectedEntryForReport, handleCloseReportModal],
   );
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  }, []);
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    },
+    [setSearchTerm],
+  );
 
   const handleReset = useCallback(() => {
     setSearchTerm("");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [setSearchTerm]);
 
   const filteredDictionaryEntries = useMemo(
     () =>
