@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getAllScenarios } from "@/services/db/scenarios";
 import { transformScenariosToDomain } from "@/services/db/scenarios/transform";
 
+export const dynamic = "error";
+
 export async function GET() {
   try {
     const dtoScenarios = await getAllScenarios();

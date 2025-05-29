@@ -2,7 +2,10 @@ import { Scenario, Conversation, Sentence } from "@/domain/scenario";
 import { apiClient } from "@/services/api/client";
 
 export async function getAllScenarios(): Promise<Scenario[]> {
-  return await apiClient.get<Scenario[]>("/api/scenarios");
+  return await apiClient.get<Scenario[]>("/api/scenarios", "force-cache", {
+    // revalidate every one day
+    revalidate: 86400,
+  });
 }
 
 export interface ScenarioDetailData {
