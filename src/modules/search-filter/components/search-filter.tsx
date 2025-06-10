@@ -1,5 +1,5 @@
 import { Search, ChevronDown, RotateCcw } from "lucide-react";
-import React from "react";
+import React, { useRef } from "react";
 
 interface CategoryOption {
   id: number;
@@ -33,6 +33,15 @@ export function SearchFilter({
   hideCategoryFilter,
   onReset,
 }: SearchFilterProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleReset = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+    onReset?.();
+  };
+
   return (
     <div className="z-10 bg-white dark:bg-gray-800 md:rounded-lg shadow-lg p-4 mb-6 sticky top-0 md:mx-4">
       <div
@@ -46,6 +55,7 @@ export function SearchFilter({
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
           <input
+            ref={inputRef}
             type="text"
             placeholder={placeholder}
             onChange={onChange}
@@ -82,7 +92,7 @@ export function SearchFilter({
           {/* Reset button */}
           {onReset && (
             <button
-              onClick={onReset}
+              onClick={handleReset}
               className="w-[3.375rem] h-[3.375rem] p-3 rounded-lg border border-gray-400 bg-transparent dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:border-pacamara-primary focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-600 outline-none transition-colors flex items-center justify-center text-lg"
               aria-label="Reset filter"
             >
